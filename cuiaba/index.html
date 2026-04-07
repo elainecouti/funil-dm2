@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#184341">
+<title>Funil · DM2 Cuiabá</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:#F7F8FA;color:#184341;font-family:'Montserrat',system-ui,sans-serif;font-size:15px;min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:#184341;display:flex;justify-content:space-between;align-items:center;padding:0 18px;height:52px;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:5px;text-decoration:none}
+.logo svg{width:28px;height:28px}
+.logo-text{font-family:'Outfit',sans-serif;font-size:19px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.logo-midas{background:linear-gradient(135deg,#00E87B,#00B8D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.live{display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.live span{font-size:11px;color:rgba(255,255,255,.55)}
+
+/* WRAP */
+.wrap{max-width:520px;margin:0 auto;padding:18px 14px 48px}
+
+/* HERO */
+.hero{margin-bottom:18px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#00A19A;background:#e6faf8;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.hero h1{font-size:24px;font-weight:800;line-height:1.15;margin-bottom:4px}
+.hero p{font-size:12px;color:#7a7a7a}
+
+/* METRIC HERO */
+.mhero{background:#184341;border-radius:18px;padding:20px 18px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden}
+.mhero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04)}
+.mhero-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45);margin-bottom:3px}
+.mhero-val{font-size:52px;font-weight:800;line-height:1;color:#ef4444;margin-bottom:2px}
+.mhero-sub{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px}
+.prog-bg{background:rgba(255,255,255,.12);border-radius:8px;height:7px;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;border-radius:8px;background:#ef4444;width:52%}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4)}
+.gap-chip{display:inline-block;margin-top:10px;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.75)}
+
+/* EXPLAIN BOX */
+.explain{background:#eff6ff;border-left:4px solid #3b82f6;border-radius:12px;padding:13px 14px;margin-bottom:14px;font-size:12px;color:#1e40af;line-height:1.6}
+.explain strong{font-size:13px}
+
+/* CARDS 2x2 */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.card{background:#fff;border-radius:13px;padding:14px 15px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#aaa;margin-bottom:3px}
+.card-val{font-size:26px;font-weight:800;color:#184341;line-height:1}
+.card-sub{font-size:11px;color:#7a7a7a;margin-top:2px}
+.card.g{border-left:4px solid #22c55e}
+.card.b{border-left:4px solid #00B8D4}
+.card.p{border-left:4px solid #9333ea}
+.card.y{border-left:4px solid #f59e0b}
+.card.r{border-left:4px solid #ef4444}
+.card.n{border-left:4px solid #d1d5db}
+
+/* FUNIL BARS */
+.funil{background:#fff;border-radius:13px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px}
+.funil-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#184341;margin-bottom:12px}
+.fstep{display:grid;grid-template-columns:100px 1fr 36px;align-items:center;gap:8px;margin-bottom:8px}
+.fstep-lbl{font-size:11px;font-weight:600;color:#555;text-align:right}
+.fbar-bg{background:#f0f0f0;border-radius:6px;height:26px;overflow:hidden}
+.fbar{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff;min-width:26px}
+.fstep-n{font-size:12px;font-weight:800;color:#184341;text-align:right}
+
+/* ALERT */
+.alert{border-radius:11px;padding:12px 13px;font-size:12px;margin-bottom:14px;display:flex;gap:8px;line-height:1.6}
+.ay{background:#fffbeb;border-left:4px solid #f59e0b;color:#92400e}
+.ag{background:#f0fdf4;border-left:4px solid #22c55e;color:#166534}
+
+/* TABLE */
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#184341;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid #e8e8e8}
+.tbl-wrap{background:#fff;border-radius:13px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#184341;color:#fff;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td:first-child{font-size:11px;font-weight:700;color:#aaa;width:28px}
+td:last-child{font-size:10px;color:#7a7a7a;white-space:nowrap}
+
+/* BACK LINK */
+.back{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#00A19A;text-decoration:none;margin-bottom:16px}
+
+.footer{text-align:center;padding:20px 16px 12px;font-size:10px;color:#ccc}
+
+@media(max-width:400px){
+  .hero h1{font-size:21px}
+  .mhero-val{font-size:44px}
+  .fstep{grid-template-columns:90px 1fr 32px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="/">
+    <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00E87B"/><stop offset="100%" stop-color="#00B8D4"/></linearGradient></defs><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="url(#lg)"/></svg>
+    <span class="logo-text">seven <span class="logo-midas">midas</span></span>
+  </a>
+  <div class="live"><div class="dot"></div><span>Atualizado 07/04/2026 14:05</span></div>
+</div>
+
+<div class="wrap">
+
+  <a class="back" href="/">← Todas as unidades</a>
+
+  <div class="hero">
+    <div class="badge">ZapClinic · Ao vivo</div>
+    <h1>Funil DM2 Cuiabá</h1>
+    <p>2026-03-01 a 2026-04-07 · Atualiza a cada 3h</p>
+  </div>
+
+  <div class="mhero">
+    <div class="mhero-label">Agendamento / leads com diálogo</div>
+    <div class="mhero-val">10.5%</div>
+    <div class="mhero-sub">Métrica correta · meta: 20%</div>
+    <div class="prog-bg"><div class="prog-fill"></div></div>
+    <div class="prog-labels"><span>0%</span><span>Meta 20%</span></div>
+    <span class="gap-chip">faltam 36 agendamentos pra meta</span>
+  </div>
+
+  <div class="explain">
+    De 532 leads gerados, <strong>151</strong> nunca responderam — não entram no cálculo.<br>
+    Denominador correto: <strong>381 leads com diálogo</strong>.<br>
+    Taxa sobre total: <strong>7.5%</strong> (referência) · Taxa real: <strong>10.5%</strong>
+  </div>
+
+  <div class="cards">
+    <div class="card b">
+      <div class="card-lbl">Leads totais</div>
+      <div class="card-val">532</div>
+      <div class="card-sub">no período</div>
+    </div>
+    <div class="card g">
+      <div class="card-lbl">Com diálogo</div>
+      <div class="card-val">381</div>
+      <div class="card-sub">responderam</div>
+    </div>
+    <div class="card p">
+      <div class="card-lbl">Agendados</div>
+      <div class="card-val">40</div>
+      <div class="card-sub">no período</div>
+    </div>
+    <div class="card r">
+      <div class="card-lbl">Gap meta 20%</div>
+      <div class="card-val">+36</div>
+      <div class="card-sub">faltando</div>
+    </div>
+    <div class="card y">
+      <div class="card-lbl">Sem resposta</div>
+      <div class="card-val">151</div>
+      <div class="card-sub">nunca responderam</div>
+    </div>
+    <div class="card n">
+      <div class="card-lbl">Taxa / total</div>
+      <div class="card-val">7.5%</div>
+      <div class="card-sub">referência apenas</div>
+    </div>
+  </div>
+
+  <div class="funil">
+    <div class="funil-title">Funil visual</div>
+    <div class="fstep">
+      <div class="fstep-lbl">Leads gerados</div>
+      <div class="fbar-bg"><div class="fbar" style="width:100%;background:#184341">532</div></div>
+      <div class="fstep-n">532</div>
+    </div>
+    <div class="fstep">
+      <div class="fstep-lbl">Com diálogo</div>
+      <div class="fbar-bg"><div class="fbar" style="width:72%;background:#00A19A">381</div></div>
+      <div class="fstep-n">381</div>
+    </div>
+    <div class="fstep">
+      <div class="fstep-lbl">Agendados</div>
+      <div class="fbar-bg"><div class="fbar" style="width:8%;background:#9333ea">40</div></div>
+      <div class="fstep-n">40</div>
+    </div>
+    <div class="fstep">
+      <div class="fstep-lbl">Meta (20%)</div>
+      <div class="fbar-bg"><div class="fbar" style="width:14%;background:#f59e0b;opacity:.6">76</div></div>
+      <div class="fstep-n" style="color:#f59e0b">76</div>
+    </div>
+  </div>
+
+  <div class="alert ay"><span>⚠️</span><div>Faltam <strong>36 agendamentos</strong> para atingir 20% sobre leads com diálogo.</div></div>
+
+  <div class="sec-title">Últimos agendamentos — 40 total</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Lead</th><th>Data</th></tr></thead>
+      <tbody><tr><td>1</td><td>Maria Carminda Da Silva</td><td>31/03/2026 às 18h54m</td></tr><tr><td>2</td><td>Rosa Angela Almeida</td><td>31/03/2026 às 17h54m</td></tr><tr><td>3</td><td>Alicia</td><td>31/03/2026 às 14h45m</td></tr><tr><td>4</td><td>Luiz Antônio de Amorin</td><td>31/03/2026 às 13h32m</td></tr><tr><td>5</td><td>Manoel</td><td>31/03/2026 às 12h49m</td></tr><tr><td>6</td><td>Walter</td><td>30/03/2026 às 15h59m</td></tr><tr><td>7</td><td>Nairubis Del Carmen Abache Flores</td><td>30/03/2026 às 15h57m</td></tr><tr><td>8</td><td>Jesus Antonio Chamos</td><td>30/03/2026 às 15h31m</td></tr><tr><td>9</td><td>Carlos Roberto da Silva Maia</td><td>28/03/2026 às 11h18m</td></tr><tr><td>10</td><td>Ana Fernanda das Neves</td><td>27/03/2026 às 19h02m</td></tr><tr><td>11</td><td>Hermes Ferreira de Moraes Filho</td><td>27/03/2026 às 12h07m</td></tr><tr><td>12</td><td>Rodolfo de Oliveira Sarat</td><td>27/03/2026 às 11h56m</td></tr><tr><td>13</td><td>Imanoel Gonçales R</td><td>26/03/2026 às 19h20m</td></tr><tr><td>14</td><td>Sergio Alexandre Fracasso</td><td>26/03/2026 às 18h28m</td></tr><tr><td>15</td><td>Heverton Neves Rodrigues Moraes</td><td>26/03/2026 às 17h33m</td></tr><tr><td>16</td><td>Ivete Carneiro de Souza</td><td>26/03/2026 às 17h26m</td></tr><tr><td>17</td><td>Elizabeth Abreu Araujo</td><td>26/03/2026 às 17h07m</td></tr><tr><td>18</td><td>Eliana Cristina Hartmann Macedo</td><td>26/03/2026 às 11h26m</td></tr><tr><td>19</td><td>Ubirajara Costa Parriao</td><td>26/03/2026 às 09h52m</td></tr><tr><td>20</td><td>Flavia Henrique dos Santos</td><td>24/03/2026 às 16h43m</td></tr><tr><td>21</td><td>Sueli Oliveira</td><td>24/03/2026 às 16h42m</td></tr><tr><td>22</td><td>Edwiges🧿</td><td>24/03/2026 às 16h40m</td></tr><tr><td>23</td><td>Rosana De Jesus Silva</td><td>24/03/2026 às 15h45m</td></tr><tr><td>24</td><td>Wemerson</td><td>24/03/2026 às 14h24m</td></tr><tr><td>25</td><td>Joelson</td><td>24/03/2026 às 14h16m</td></tr></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">Seven Midas Marketing · DM2 Cuiabá · 07/04/2026 14:05</div>
+</body>
+</html>

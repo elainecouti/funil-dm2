@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#184341">
+<title>Seven · Funil DM2</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#F7F8FA;color:#184341;font-family:'Montserrat',system-ui,sans-serif}
+.topbar{background:#184341;display:flex;justify-content:space-between;align-items:center;padding:0 18px;height:52px;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:5px;text-decoration:none}
+.logo svg{width:28px;height:28px}
+.logo-text{font-family:'Outfit',sans-serif;font-size:19px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.logo-midas{background:linear-gradient(135deg,#00E87B,#00B8D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.live{display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.live span{font-size:11px;color:rgba(255,255,255,.55)}
+.wrap{max-width:520px;margin:0 auto;padding:18px 14px 48px}
+.hero{margin-bottom:18px}
+.hero h1{font-size:22px;font-weight:800;margin-bottom:3px}
+.hero p{font-size:12px;color:#7a7a7a}
+.grid{display:flex;flex-direction:column;gap:10px}
+.ucard{background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);text-decoration:none;color:#184341;display:block;transition:box-shadow .2s}
+.ucard:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.ucard-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.ucard-nome{font-size:15px;font-weight:800}
+.ucard-estado{font-size:11px;color:#7a7a7a;margin-top:2px}
+.ucard-rate{font-size:28px;font-weight:800;line-height:1}
+.ucard-bar-bg{background:#f0f0f0;border-radius:6px;height:6px;overflow:hidden;margin-bottom:8px}
+.ucard-bar{height:100%;border-radius:6px;transition:width .5s}
+.ucard-bottom{display:flex;justify-content:space-between;font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.footer{text-align:center;padding:20px 16px;font-size:10px;color:#ccc}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="logo" href="/">
+    <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00E87B"/><stop offset="100%" stop-color="#00B8D4"/></linearGradient></defs><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="url(#lg)"/></svg>
+    <span class="logo-text">seven <span class="logo-midas">midas</span></span>
+  </a>
+  <div class="live"><div class="dot"></div><span>07/04/2026 14:05</span></div>
+</div>
+<div class="wrap">
+  <div class="hero">
+    <h1>Funil DM2</h1>
+    <p>Agendamentos / leads com diálogo · meta 20% · atualiza 3h</p>
+  </div>
+  <div class="grid">
+        <a class="ucard" href="/cuiaba/">
+          <div class="ucard-top">
+            <div>
+              <div class="ucard-nome">Cuiabá</div>
+              <div class="ucard-estado">MT</div>
+            </div>
+            <div class="ucard-rate" style="color:#ef4444">10.5%</div>
+          </div>
+          <div class="ucard-bar-bg">
+            <div class="ucard-bar" style="width:52%;background:#ef4444"></div>
+          </div>
+          <div class="ucard-bottom">
+            <span>532 leads</span>
+            <span>40 agendados</span>
+            <span>meta 20%</span>
+          </div>
+        </a></div>
+</div>
+<div class="footer">Seven Midas Marketing · 07/04/2026 14:05</div>
+</body>
+</html>

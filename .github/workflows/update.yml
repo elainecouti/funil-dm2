@@ -1,0 +1,38 @@
+name: Atualizar Funil DM2
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'   # a cada 3 horas
+  push:
+    branches: [main]
+  workflow_dispatch: {}     # disparo manual pelo GitHub
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Gerar funis
+        run: python gerar_funil.py
+
+      - name: Commit e push
+        run: |
+          git config user.name "Seven Bot"
+          git config user.email "bot@sevenmidas.com.br"
+          git add -A
+          git diff --staged --quiet || (
+            git commit -m "Auto-update $(date -u '+%d/%m/%Y %H:%M UTC')" && git push
+          )
