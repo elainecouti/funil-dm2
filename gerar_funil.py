@@ -98,9 +98,10 @@ def fetch_leads(session, server, date_from, date_to):
 def fetch_dialogs(session, server, date_from, date_to):
     base = f"https://{server}"
     session.get(f"{base}/reports/dialogs", timeout=15)
+    # created_from/to = data do diálogo (NÃO report_sign_up_from/to que é data do cadastro)
     form = {
         "report_name": "", "not_delegated": "",
-        "report_sign_up_from": date_from, "report_sign_up_to": date_to,
+        "created_from": date_from, "created_to": date_to,
         "report_chat_status": "", "report_include_tags_rule": "",
         "report_exclude_tags_rule": "",
     }
@@ -123,41 +124,55 @@ def fetch_dialogs(session, server, date_from, date_to):
             cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL)
             if len(cells) >= 4:
                 dialogs.append({
-                    "dialogo": _clean(cells[0]).split("\n")[0].strip(),
+                    "dialogo": _clean(cells[0]).strip(),  # texto completo, não só 1ª linha
                     "lead": _clean(cells[1]).split("\n")[0].strip(),
                     "whatsapp": _clean(cells[2]).split("\n")[0].strip() if len(cells) > 2 else "",
                     "data": _clean(cells[4]).split("\n")[0].strip() if len(cells) > 4 else "",
                 })
     return dialogs
 
-RE_AGENDOU = re.compile(r"(agendou|reagendou|agendamento\s+confirmado|consulta\s+marcada)", re.I)
+RE_AGENDOU   = re.compile(r"\bagendou\b", re.I)
+RE_REAGENDOU = re.compile(r"\breagendou\b", re.I)
+
+def _norm_wpp(wpp):
+    return re.sub(r"\D", "", wpp)[-11:] if wpp else ""
 
 def detect_agendados(dialogs):
-    agendados, seen = [], set()
+    """Retorna (agendados, reagendados) como listas separadas de dicts únicos por lead."""
+    agendados, reagendados = [], []
+    seen_ag, seen_re = set(), set()
     for d in sorted(dialogs, key=lambda x: x.get("data", ""), reverse=True):
-        if RE_AGENDOU.search(d.get("dialogo", "")):
-            key = d.get("whatsapp") or d.get("lead")
-            if key and key not in seen:
-                seen.add(key)
-                agendados.append(d)
-    return agendados
+        texto = d.get("dialogo", "")
+        key = _norm_wpp(d.get("whatsapp")) or d.get("lead", "")
+        if not key:
+            continue
+        if RE_REAGENDOU.search(texto) and key not in seen_re:
+            seen_re.add(key)
+            reagendados.append(d)
+        if RE_AGENDOU.search(texto) and key not in seen_ag:
+            seen_ag.add(key)
+            agendados.append(d)
+    return agendados, reagendados
 
-def calcular_metricas(leads, dialogs, agendados, meta_pct):
-    total_leads = len(leads)
-    total_dialogs = len(dialogs)
-    total_agendados = len(agendados)
-    wpp_leads   = {l.get("whatsapp","").replace(" ","")[-11:] for l in leads   if l.get("whatsapp")}
-    wpp_dialogs = {d.get("whatsapp","").replace(" ","")[-11:] for d in dialogs if d.get("whatsapp")}
+def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct):
+    total_leads       = len(leads)
+    total_dialogs     = len(dialogs)
+    total_reagendados = len(reagendados)
+    # Total = agendamentos + reagendamentos (eventos, não leads únicos)
+    total_agendados = len(agendados) + len(reagendados)
+    wpp_leads   = {_norm_wpp(l.get("whatsapp")) for l in leads   if l.get("whatsapp")}
+    wpp_dialogs = {_norm_wpp(d.get("whatsapp")) for d in dialogs if d.get("whatsapp")}
+    wpp_leads.discard(""); wpp_dialogs.discard("")
     leads_com_dialogo = len(wpp_leads & wpp_dialogs) if wpp_leads and wpp_dialogs else total_dialogs
-    sem_resposta  = max(0, total_leads - leads_com_dialogo)
-    tx_total      = round(total_agendados / total_leads * 100, 1) if total_leads else 0
-    tx_dialogo    = round(total_agendados / leads_com_dialogo * 100, 1) if leads_com_dialogo else 0
+    sem_resposta      = max(0, total_leads - leads_com_dialogo)
+    tx_total          = round(total_agendados / total_leads * 100, 1) if total_leads else 0
+    tx_dialogo        = round(total_agendados / leads_com_dialogo * 100, 1) if leads_com_dialogo else 0
     agend_necessarios = round(leads_com_dialogo * meta_pct / 100)
     gap = max(0, agend_necessarios - total_agendados)
     return {
         "total_leads": total_leads, "total_dialogs": total_dialogs,
         "leads_com_dialogo": leads_com_dialogo, "sem_resposta": sem_resposta,
-        "total_agendados": total_agendados,
+        "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "tx_total": tx_total, "tx_dialogo": tx_dialogo,
         "meta_pct": meta_pct, "agend_necessarios": agend_necessarios,
         "gap": gap, "agendados_lista": agendados[:25],
@@ -324,6 +339,11 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-val">{m['total_agendados']}</div>
       <div class="card-sub">no período</div>
     </div>
+    <div class="card b">
+      <div class="card-lbl">Reagendados</div>
+      <div class="card-val">{m['total_reagendados']}</div>
+      <div class="card-sub">remarcararam consulta</div>
+    </div>
     <div class="card {'r' if m['gap'] > 0 else 'g'}">
       <div class="card-lbl">Gap meta {m['meta_pct']}%</div>
       <div class="card-val">{"+" + str(m['gap']) if m['gap'] > 0 else "✓"}</div>
@@ -484,9 +504,9 @@ def main():
             print(f"[{slug}] {len(leads)} leads")
             dialogs = fetch_dialogs(session, unit["server"], date_from, date_to)
             print(f"[{slug}] {len(dialogs)} diálogos")
-            agendados = detect_agendados(dialogs)
-            print(f"[{slug}] {len(agendados)} agendamentos")
-            m = calcular_metricas(leads, dialogs, agendados, unit["meta"])
+            agendados, reagendados = detect_agendados(dialogs)
+            print(f"[{slug}] {len(agendados)} agendamentos · {len(reagendados)} reagendamentos")
+            m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"])
             unit["metricas"] = m
             units_ok.append(unit)
 
