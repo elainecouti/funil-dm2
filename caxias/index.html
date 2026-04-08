@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DM2 Caxias · Março 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   MANDATORY VIEWPORT BASE
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #04060F;
+  color: #F0F4FF;
+}
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+:root {
+  --title-size:    clamp(1.8rem, 5.5vw, 4.5rem);
+  --h2-size:       clamp(1.2rem, 3vw, 2.2rem);
+  --h3-size:       clamp(0.95rem, 2vw, 1.5rem);
+  --body-size:     clamp(0.75rem, 1.3vw, 1.05rem);
+  --small-size:    clamp(0.6rem, 0.9vw, 0.8rem);
+  --num-size:      clamp(2rem, 6vw, 5rem);
+  --num-sm-size:   clamp(1.4rem, 3.5vw, 3rem);
+  --slide-pad:     clamp(1.5rem, 4vw, 4rem);
+  --gap:           clamp(0.6rem, 1.5vw, 1.5rem);
+  --gap-sm:        clamp(0.3rem, 0.8vw, 0.8rem);
+
+  --green:  #00FF88;
+  --cyan:   #00C8FF;
+  --gold:   #FFD060;
+  --red:    #FF5555;
+  --purple: #9B6DFF;
+  --bg:     #04060F;
+  --bg2:    #080C1A;
+  --bg3:    #0D1226;
+  --border: rgba(0, 200, 255, 0.15);
+  --text:   #F0F4FF;
+  --muted:  #8892AA;
+}
+
+/* ============================================
+   GLOBAL COMPONENTS
+   ============================================ */
+.slide-num {
+  position: absolute;
+  bottom: clamp(0.8rem, 2vh, 1.5rem);
+  right: clamp(1rem, 3vw, 2.5rem);
+  font-size: var(--small-size);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25em 0.75em;
+  border-radius: 999px;
+  font-size: var(--small-size);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tag-green  { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+.tag-cyan   { background: rgba(0,200,255,0.15); color: var(--cyan);  border: 1px solid rgba(0,200,255,0.3); }
+.tag-red    { background: rgba(255,85,85,0.15);  color: var(--red);   border: 1px solid rgba(255,85,85,0.3); }
+.tag-gold   { background: rgba(255,208,96,0.15); color: var(--gold);  border: 1px solid rgba(255,208,96,0.3); }
+.tag-purple { background: rgba(155,109,255,0.15);color: var(--purple);border: 1px solid rgba(155,109,255,0.3); }
+
+.divider {
+  width: 3rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+  margin: var(--gap-sm) 0;
+}
+
+/* Grid noise overlay */
+.slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,200,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.slide > * { position: relative; z-index: 1; }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+@keyframes glow-pulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(0,255,136,0.4); }
+  50%       { text-shadow: 0 0 40px rgba(0,255,136,0.8), 0 0 80px rgba(0,255,136,0.3); }
+}
+@keyframes count-up { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes line-grow { from { width: 0; } to { width: var(--target-w, 100%); } }
+
+/* ============================================
+   SLIDE 1 — CAPA
+   ============================================ */
+#s1 {
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0,200,255,0.08) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 80% 70%, rgba(0,255,136,0.06) 0%, transparent 60%),
+              var(--bg);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--gap);
+}
+
+#s1 .badge {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--small-size);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  padding: 0.4em 1.2em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(0,200,255,0.08);
+}
+
+#s1 h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--title-size);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  max-width: 900px;
+}
+
+#s1 h1 span { color: var(--green); animation: glow-pulse 3s ease infinite; }
+
+#s1 .meta-line {
+  font-size: var(--h3-size);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: center;
+}
+#s1 .meta-line b { color: var(--text); }
+
+#s1 .big-result {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 2vw, 2rem);
+  background: rgba(0,255,136,0.06);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 1rem;
+  padding: clamp(0.8rem, 2vw, 1.5rem) clamp(1.5rem, 4vw, 3rem);
+  margin-top: var(--gap-sm);
+}
+
+#s1 .big-result .num {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--num-size);
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1;
+}
+#s1 .big-result .label {
+  text-align: left;
+  font-size: var(--body-size);
+  color: var(--muted);
+  line-height: 1.4;
+}
+#s1 .big-result .label strong { display: block; font-size: var(--h3-size); color: var(--text); }
+
+/* Decorative corner */
+#s1 .corner-deco {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: clamp(120px, 20vw, 280px);
+  height: clamp(120px, 20vw, 280px);
+  background: radial-gradient(circle at bottom left, rgba(0,255,136,0.1), transparent 70%);
+  pointer-events: none;
+}
+#s1 .corner-deco-r {
+  position: absolute;
+  top: 0; right: 0;
+  width: clamp(100px, 18vw, 240px);
+  height: clamp(100px, 18vw, 240px);
+  background: radial-gradient(circle at top right, rgba(0,200,255,0.08), transparent 70%);
+  pointer-events: none;
+}
+
+/* ============================================
+   SLIDE 2 — KPIs PRINCIPAIS
+   ============================================ */
+#s2 { background: var(--bg); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.slide-header { margin-bottom: var(--gap-sm); }
+.slide-label {
+  font-size: var(--small-size);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.3em;
+}
+.slide-title {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--h2-size);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: var(--gap);
+  flex: 1;
+  align-items: stretch;
+}
+
+.kpi-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: clamp(0.8rem, 1.5vw, 1.2rem);
+  padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.2vw, 1rem);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.kpi-card:hover { transform: translateY(-3px); border-color: rgba(0,200,255,0.3); }
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.kpi-card.green::after { background: linear-gradient(90deg, var(--green), transparent); }
+.kpi-card.cyan::after  { background: linear-gradient(90deg, var(--cyan), transparent); }
+.kpi-card.gold::after  { background: linear-gradient(90deg, var(--gold), transparent); }
+.kpi-card.purple::after{ background: linear-gradient(90deg, var(--purple), transparent); }
+
+.kpi-label { font-size: var(--small-size); color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+.kpi-num {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5.5vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  animation: count-up 0.6s ease both;
+}
+.kpi-card.green .kpi-num  { color: var(--green); }
+.kpi-card.cyan .kpi-num   { color: var(--cyan); }
+.kpi-card.gold .kpi-num   { color: var(--gold); }
+.kpi-card.purple .kpi-num { color: var(--purple); }
+
+.kpi-sub { font-size: var(--body-size); color: var(--muted); line-height: 1.5; }
+.kpi-sub strong { color: var(--text); }
+
+.kpi-badge {
+  display: inline-block;
+  font-size: var(--body-size);
+  font-weight: 700;
+  padding: 0.3em 0.9em;
+  border-radius: 999px;
+  margin-top: auto;
+  align-self: flex-start;
+}
+.kpi-card.green .kpi-badge { background: rgba(0,255,136,0.15); color: var(--green); }
+.kpi-card.cyan .kpi-badge  { background: rgba(0,200,255,0.15); color: var(--cyan); }
+.kpi-card.gold .kpi-badge  { background: rgba(255,208,96,0.15); color: var(--gold); }
+.kpi-card.purple .kpi-badge{ background: rgba(155,109,255,0.15); color: var(--purple); }
+
+/* ============================================
+   SLIDE 3 — FUNIL
+   ============================================ */
+#s3 { background: var(--bg2); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.funnel-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 3rem);
+  flex: 1;
+  align-items: center;
+}
+
+.funnel-steps {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 0.8vh, 0.8rem);
+}
+
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: clamp(0.5rem, 1.2vw, 1rem) clamp(0.8rem, 1.5vw, 1.2rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.funnel-step .bar-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 0.6rem;
+  opacity: 0.07;
+  transition: width 1s ease;
+  width: 0;
+}
+.funnel-step.active .bar-fill { width: var(--fill, 100%); }
+
+.funnel-step .step-num {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--h3-size);
+  font-weight: 800;
+  min-width: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+}
+.funnel-step .step-label {
+  flex: 1;
+  font-size: var(--body-size);
+  color: var(--muted);
+  line-height: 1.3;
+}
+.funnel-step .step-label strong { display: block; color: var(--text); font-size: calc(var(--body-size) * 1.05); }
+.funnel-step .step-pct {
+  font-size: var(--small-size);
+  font-weight: 700;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.funnel-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.funnel-big-stat {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  text-align: center;
+}
+.funnel-big-stat .fbig {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--num-sm-size);
+  font-weight: 800;
+  line-height: 1;
+}
+.funnel-big-stat .fsmall { font-size: var(--small-size); color: var(--muted); margin-top: 0.3em; }
+
+.funnel-rates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-sm);
+}
+
+.rate-box {
+  background: var(--bg3);
+  border-radius: 0.8rem;
+  padding: clamp(0.6rem, 1.5vw, 1.2rem);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.rate-box .rnum {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--h2-size);
+  font-weight: 800;
+  line-height: 1;
+}
+.rate-box .rlabel { font-size: var(--small-size); color: var(--muted); margin-top: 0.2em; }
+
+/* ============================================
+   SLIDE 4 — GEOGRAFIA
+   ============================================ */
+#s4 { background: var(--bg); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.geo-wrap {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  flex: 1;
+  align-items: center;
+}
+
+.bar-chart { display: flex; flex-direction: column; gap: clamp(0.5rem, 1.2vh, 1rem); }
+
+.bar-row { display: flex; flex-direction: column; gap: 0.3em; }
+.bar-meta { display: flex; justify-content: space-between; align-items: center; }
+.bar-city { font-size: var(--body-size); font-weight: 500; color: var(--text); }
+.bar-count { font-size: var(--body-size); font-weight: 700; font-family: 'Syne', sans-serif; }
+.bar-track {
+  height: clamp(6px, 1.2vh, 10px);
+  background: var(--bg3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar-fill-h {
+  height: 100%;
+  border-radius: 999px;
+  width: 0;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bar-fill-h.active { width: var(--w, 0%); }
+
+.geo-insights { display: flex; flex-direction: column; gap: var(--gap); }
+.insight-card {
+  background: var(--bg3);
+  border-radius: 0.8rem;
+  border: 1px solid var(--border);
+  padding: clamp(0.8rem, 2vw, 1.5rem);
+}
+.insight-card .iheader { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5em; }
+.insight-card .idot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.insight-card .ititle { font-size: var(--body-size); font-weight: 600; color: var(--text); }
+.insight-card .itext { font-size: var(--small-size); color: var(--muted); line-height: 1.5; }
+.insight-card .itext strong { color: var(--text); }
+
+/* ============================================
+   SLIDE 5 — AVALIAÇÕES & CLOSE RATE
+   ============================================ */
+#s5 { background: var(--bg2); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.eval-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 3rem);
+  flex: 1;
+  align-items: start;
+}
+
+.close-section { display: flex; flex-direction: column; gap: var(--gap-sm); }
+.section-label {
+  font-size: var(--small-size);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2em;
+}
+
+.close-bar-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr auto;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+.close-bar-row .clabel { font-size: var(--body-size); color: var(--muted); }
+.close-track {
+  height: clamp(8px, 1.5vh, 12px);
+  background: var(--bg3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.close-fill {
+  height: 100%;
+  border-radius: 999px;
+  width: 0;
+  transition: width 1s ease 0.3s;
+}
+.close-fill.active { width: var(--w, 0%); }
+.close-pct {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--body-size);
+  font-weight: 700;
+  min-width: 3rem;
+  text-align: right;
+}
+
+.city-table { display: flex; flex-direction: column; gap: clamp(0.3rem, 0.8vh, 0.7rem); }
+.city-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: var(--gap);
+  background: var(--bg3);
+  border-radius: 0.5rem;
+  padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.6rem, 1.5vw, 1rem);
+  border: 1px solid var(--border);
+}
+.city-name { font-size: var(--body-size); color: var(--text); font-weight: 500; }
+.city-nums { font-size: var(--small-size); color: var(--muted); }
+.city-result {
+  font-size: var(--small-size);
+  font-weight: 700;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.city-result.good  { background: rgba(0,255,136,0.15); color: var(--green); }
+.city-result.warn  { background: rgba(255,208,96,0.15); color: var(--gold); }
+.city-result.bad   { background: rgba(255,85,85,0.15);  color: var(--red); }
+.city-result.great { background: rgba(155,109,255,0.15);color: var(--purple); }
+
+/* ============================================
+   SLIDE 6 — PIPELINE ABRIL
+   ============================================ */
+#s6 { background: var(--bg); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.pipeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  flex: 1;
+}
+
+.pipeline-col { display: flex; flex-direction: column; gap: var(--gap-sm); }
+.pipeline-col-label {
+  font-size: var(--small-size);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.4em 0.8em;
+  border-radius: 0.4rem;
+  width: fit-content;
+}
+.pipeline-col-label.hot  { background: rgba(255,85,85,0.15);  color: var(--red); }
+.pipeline-col-label.cold { background: rgba(136,146,170,0.15); color: var(--muted); }
+
+.lead-card {
+  background: var(--bg3);
+  border-radius: 0.7rem;
+  padding: clamp(0.6rem, 1.5vw, 1rem) clamp(0.8rem, 1.8vw, 1.3rem);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  transition: border-color 0.2s ease;
+}
+.lead-card.hot  { border-color: rgba(255,85,85,0.25); }
+.lead-card.warm { border-color: rgba(255,208,96,0.2); }
+.lead-card:hover { border-color: rgba(0,200,255,0.3); }
+
+.lead-name { font-size: var(--body-size); font-weight: 600; color: var(--text); }
+.lead-city { font-size: var(--small-size); color: var(--muted); }
+.lead-status { font-size: var(--small-size); line-height: 1.4; color: var(--muted); margin-top: 0.2em; }
+.lead-status strong { color: var(--green); }
+.lead-status.warn strong { color: var(--gold); }
+
+/* ============================================
+   SLIDE 7 — META ADS CRIATIVOS
+   ============================================ */
+#s7 { background: var(--bg2); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.ads-table { display: flex; flex-direction: column; gap: clamp(0.3rem, 0.7vh, 0.6rem); flex: 1; }
+
+.ad-header-row {
+  display: grid;
+  grid-template-columns: 1fr 5rem 5rem 5rem 7rem;
+  gap: var(--gap);
+  padding: 0 clamp(0.6rem, 1.5vw, 1rem);
+  margin-bottom: 0.2em;
+}
+.ad-header-row span {
+  font-size: var(--small-size);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+.ad-header-row span:first-child { text-align: left; }
+
+.ad-row {
+  display: grid;
+  grid-template-columns: 1fr 5rem 5rem 5rem 7rem;
+  gap: var(--gap);
+  background: var(--bg3);
+  border-radius: 0.6rem;
+  padding: clamp(0.5rem, 1.2vw, 0.9rem) clamp(0.6rem, 1.5vw, 1rem);
+  border: 1px solid var(--border);
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+.ad-row:hover { border-color: rgba(0,200,255,0.25); }
+
+.ad-name { font-size: var(--body-size); color: var(--text); font-weight: 500; }
+.ad-val  { font-size: var(--body-size); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.ad-cpl-green  { color: var(--green); }
+.ad-cpl-cyan   { color: var(--cyan); }
+.ad-cpl-gold   { color: var(--gold); }
+.ad-cpl-red    { color: var(--red); }
+
+.ad-action {
+  display: flex;
+  justify-content: flex-end;
+}
+.action-chip {
+  font-size: var(--small-size);
+  font-weight: 700;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.action-escalar { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+.action-manter  { background: rgba(0,200,255,0.12); color: var(--cyan); }
+.action-reduzir { background: rgba(255,208,96,0.12); color: var(--gold); }
+.action-pausar  { background: rgba(255,85,85,0.12); color: var(--red); border: 1px solid rgba(255,85,85,0.3); }
+
+/* ============================================
+   SLIDE 8 — GARGALOS
+   ============================================ */
+#s8 { background: var(--bg); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.gap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--gap);
+  flex: 1;
+}
+
+.gap-card {
+  background: var(--bg3);
+  border-radius: 1rem;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  overflow: hidden;
+  position: relative;
+}
+.gap-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.gap-card.g1::before { background: var(--red); }
+.gap-card.g2::before { background: var(--gold); }
+.gap-card.g3::before { background: var(--purple); }
+.gap-card.g4::before { background: var(--cyan); }
+
+.gap-num-big {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 4.5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.gap-card.g1 .gap-num-big { color: var(--red); }
+.gap-card.g2 .gap-num-big { color: var(--gold); }
+.gap-card.g3 .gap-num-big { color: var(--purple); }
+.gap-card.g4 .gap-num-big { color: var(--cyan); }
+
+.gap-title { font-size: var(--h3-size); font-weight: 600; color: var(--text); line-height: 1.3; }
+.gap-text  { font-size: var(--small-size); color: var(--muted); line-height: 1.5; }
+.gap-text strong { color: var(--text); }
+.gap-action {
+  margin-top: auto;
+  font-size: var(--small-size);
+  font-weight: 600;
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+.gap-card.g1 .gap-action { background: rgba(255,85,85,0.12); color: var(--red); }
+.gap-card.g2 .gap-action { background: rgba(255,208,96,0.12); color: var(--gold); }
+.gap-card.g3 .gap-action { background: rgba(155,109,255,0.12); color: var(--purple); }
+.gap-card.g4 .gap-action { background: rgba(0,200,255,0.12); color: var(--cyan); }
+
+/* ============================================
+   SLIDE 9 — ACHADOS
+   ============================================ */
+#s9 { background: var(--bg2); padding: var(--slide-pad); gap: var(--gap); justify-content: center; }
+
+.findings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  flex: 1;
+  align-items: stretch;
+}
+
+.finding-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+.finding-icon {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  margin-bottom: 0.2em;
+}
+.finding-title { font-family: 'Syne', sans-serif; font-size: var(--h3-size); font-weight: 700; color: var(--text); line-height: 1.2; }
+.finding-title span { display: block; }
+.finding-stat {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.finding-text { font-size: var(--small-size); color: var(--muted); line-height: 1.5; }
+.finding-text strong { color: var(--text); }
+
+/* ============================================
+   SLIDE 10 — PRIORIDADES
+   ============================================ */
+#s10 {
+  background: radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,200,255,0.05) 0%, transparent 70%), var(--bg);
+  padding: var(--slide-pad);
+  gap: var(--gap);
+  justify-content: center;
+}
+
+.priority-list { display: flex; flex-direction: column; gap: clamp(0.4rem, 1vh, 0.9rem); flex: 1; justify-content: center; }
+
+.priority-item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: var(--gap);
+  align-items: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  padding: clamp(0.6rem, 1.5vw, 1rem) clamp(0.8rem, 2vw, 1.5rem);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.priority-item:hover { border-color: rgba(0,200,255,0.3); transform: translateX(4px); }
+
+.priority-num {
+  font-family: 'Syne', sans-serif;
+  font-size: var(--h3-size);
+  font-weight: 800;
+  text-align: center;
+  line-height: 1;
+}
+.priority-item:nth-child(1) .priority-num { color: var(--red); }
+.priority-item:nth-child(2) .priority-num { color: var(--gold); }
+.priority-item:nth-child(3) .priority-num { color: var(--green); }
+.priority-item:nth-child(4) .priority-num { color: var(--cyan); }
+.priority-item:nth-child(5) .priority-num { color: var(--purple); }
+.priority-item:nth-child(6) .priority-num { color: var(--muted); }
+
+.priority-text { font-size: var(--body-size); color: var(--text); line-height: 1.4; }
+.priority-text span { display: block; font-size: var(--small-size); color: var(--muted); margin-top: 0.2em; }
+
+/* ============================================
+   NAV & PROGRESS
+   ============================================ */
+.nav-dots {
+  position: fixed;
+  right: clamp(0.8rem, 2vw, 1.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+}
+.nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.4;
+}
+.nav-dot.active {
+  background: var(--cyan);
+  opacity: 1;
+  transform: scale(1.5);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--cyan));
+  width: 0%;
+  transition: width 0.4s ease;
+  z-index: 100;
+  box-shadow: 0 0 8px rgba(0,255,136,0.5);
+}
+
+.keyboard-hint {
+  position: fixed;
+  bottom: clamp(0.8rem, 2vh, 1.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--small-size);
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 100;
+}
+.keyboard-hint.visible { opacity: 1; }
+
+@media (max-height: 600px) {
+  .nav-dots, .keyboard-hint { display: none; }
+  :root {
+    --slide-pad: clamp(0.8rem, 3vw, 2rem);
+    --gap: clamp(0.4rem, 1vw, 1rem);
+    --gap-sm: clamp(0.2rem, 0.5vw, 0.5rem);
+    --h2-size: clamp(1rem, 2.5vw, 1.6rem);
+    --body-size: clamp(0.65rem, 1.1vw, 0.9rem);
+    --small-size: clamp(0.55rem, 0.8vw, 0.72rem);
+    --num-sm-size: clamp(1.2rem, 3vw, 2.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="keyboard-hint" id="kbHint">↑↓ setas • espaço • roda do mouse</div>
+
+<nav class="nav-dots" id="navDots" aria-label="Navegação de slides"></nav>
+
+<main>
+
+<!-- ====================================================
+     SLIDE 1 — CAPA
+     ==================================================== -->
+<section class="slide" id="s1" data-slide="1">
+  <div class="corner-deco"></div>
+  <div class="corner-deco-r"></div>
+
+  <div class="badge reveal">Seven Midas · Análise Mensal</div>
+
+  <h1 class="reveal reveal-delay-1">
+    DM2 <span>Caxias</span><br>Março 2026
+  </h1>
+
+  <p class="meta-line reveal reveal-delay-2">
+    <span>490 leads trabalhados</span>
+    <span style="color:var(--border)">|</span>
+    <b>12 fechamentos</b>
+    <span style="color:var(--border)">|</span>
+    <span>Ticket médio R$5.004</span>
+  </p>
+
+  <div class="big-result reveal reveal-delay-3">
+    <div class="num">111%</div>
+    <div class="label">
+      <strong>Meta superada</strong>
+      R$66.663 faturamento total<br>vs meta R$60.000
+    </div>
+  </div>
+
+  <span class="slide-num">01 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 2 — KPIs
+     ==================================================== -->
+<section class="slide" id="s2" data-slide="2">
+  <div class="slide-header reveal">
+    <div class="slide-label">Resultado Geral</div>
+    <h2 class="slide-title">Março 2026 em números</h2>
+  </div>
+
+  <div class="kpi-grid reveal reveal-delay-1">
+    <div class="kpi-card green">
+      <div class="kpi-label">Faturamento Total</div>
+      <div class="kpi-num">R$66.663</div>
+      <div class="kpi-sub">
+        Vendas: <strong>R$60.048</strong><br>
+        Consultas/produtos: R$6.615
+      </div>
+      <div class="kpi-badge">+11% da meta</div>
+    </div>
+
+    <div class="kpi-card cyan">
+      <div class="kpi-label">Fechamentos</div>
+      <div class="kpi-num">12</div>
+      <div class="kpi-sub">
+        Close rate: <strong>50%</strong> dos que vieram<br>
+        +1 pago em abril (Domingos)
+      </div>
+      <div class="kpi-badge">50% close rate</div>
+    </div>
+
+    <div class="kpi-card gold">
+      <div class="kpi-label">Ticket Médio</div>
+      <div class="kpi-num">R$5.004</div>
+      <div class="kpi-sub">
+        Plano R$3.800: <strong>6 vendas</strong><br>
+        Planos premium: 4 vendas
+      </div>
+      <div class="kpi-badge">R$3.800 → R$6.499</div>
+    </div>
+
+    <div class="kpi-card purple">
+      <div class="kpi-label">ROAS Estimado</div>
+      <div class="kpi-num">13,3x</div>
+      <div class="kpi-sub">
+        Gasto estimado: <strong>~R$5.000</strong><br>
+        CPL ref: R$15,57 (7d/19mar)
+      </div>
+      <div class="kpi-badge">Token expirado*</div>
+    </div>
+  </div>
+
+  <span class="slide-num">02 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 3 — FUNIL
+     ==================================================== -->
+<section class="slide" id="s3" data-slide="3">
+  <div class="slide-header reveal">
+    <div class="slide-label">Funil Completo</div>
+    <h2 class="slide-title">490 leads → 12 fechamentos</h2>
+  </div>
+
+  <div class="funnel-wrap reveal reveal-delay-1">
+    <div class="funnel-steps">
+
+      <div class="funnel-step" style="--fill:100%">
+        <div class="bar-fill" style="background:var(--cyan)"></div>
+        <div class="step-num" style="color:var(--cyan)">490</div>
+        <div class="step-label">
+          <strong>Base trabalhada</strong>
+          321 novos tráfego + 20 org + 149 antigos
+        </div>
+        <div class="step-pct" style="background:rgba(0,200,255,0.1);color:var(--cyan)">100%</div>
+      </div>
+
+      <div class="funnel-step" style="--fill:62%">
+        <div class="bar-fill" style="background:var(--gold)"></div>
+        <div class="step-num" style="color:var(--gold)">187</div>
+        <div class="step-label">
+          <strong>Não interagiram</strong>
+          SDR não conseguiu contato
+        </div>
+        <div class="step-pct" style="background:rgba(255,208,96,0.1);color:var(--gold)">38%</div>
+      </div>
+
+      <div class="funnel-step" style="--fill:17%">
+        <div class="bar-fill" style="background:var(--red)"></div>
+        <div class="step-num" style="color:var(--red)">77</div>
+        <div class="step-label">
+          <strong>Ligações atendidas</strong>
+          de 443 feitas — 17,4% atendimento
+        </div>
+        <div class="step-pct" style="background:rgba(255,85,85,0.1);color:var(--red)">17,4%</div>
+      </div>
+
+      <div class="funnel-step" style="--fill:12%">
+        <div class="bar-fill" style="background:var(--green)"></div>
+        <div class="step-num" style="color:var(--green)">59</div>
+        <div class="step-label">
+          <strong>Agendamentos</strong>
+          32 msg · 20 ligação · 8 reagendados
+        </div>
+        <div class="step-pct" style="background:rgba(0,255,136,0.1);color:var(--green)">12%</div>
+      </div>
+
+      <div class="funnel-step" style="--fill:9%">
+        <div class="bar-fill" style="background:var(--green)"></div>
+        <div class="step-num" style="color:var(--green)">24</div>
+        <div class="step-label">
+          <strong>Compareceram</strong>
+          de 44 com data — 55% show rate
+        </div>
+        <div class="step-pct" style="background:rgba(0,255,136,0.1);color:var(--green)">55%</div>
+      </div>
+
+      <div class="funnel-step" style="--fill:5%">
+        <div class="bar-fill" style="background:var(--green)"></div>
+        <div class="step-num" style="color:var(--green); font-size: calc(var(--h3-size)*1.3)">12</div>
+        <div class="step-label">
+          <strong>Fechamentos · R$60.048</strong>
+          50% close rate dos que vieram
+        </div>
+        <div class="step-pct" style="background:rgba(0,255,136,0.2);color:var(--green); border: 1px solid rgba(0,255,136,0.4)">50%</div>
+      </div>
+
+    </div>
+
+    <div class="funnel-summary">
+      <div class="funnel-big-stat">
+        <div class="fbig" style="color:var(--green)">55%</div>
+        <div class="fsmall">Show rate<br>(benchmark bom: 60-70%)</div>
+      </div>
+      <div class="funnel-rates">
+        <div class="rate-box">
+          <div class="rnum" style="color:var(--gold)">32</div>
+          <div class="rlabel">via mensagem<br>(canal preferido)</div>
+        </div>
+        <div class="rate-box">
+          <div class="rnum" style="color:var(--red)">17,4%</div>
+          <div class="rlabel">ligações<br>atendidas</div>
+        </div>
+        <div class="rate-box">
+          <div class="rnum" style="color:var(--purple)">149</div>
+          <div class="rlabel">leads antigos<br>reativados</div>
+        </div>
+        <div class="rate-box">
+          <div class="rnum" style="color:var(--cyan)">12%</div>
+          <div class="rlabel">conversão<br>base → agend.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <span class="slide-num">03 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 4 — GEOGRAFIA
+     ==================================================== -->
+<section class="slide" id="s4" data-slide="4">
+  <div class="slide-header reveal">
+    <div class="slide-label">Distribuição Geográfica</div>
+    <h2 class="slide-title">333 leads rastreados no ZapClinic</h2>
+  </div>
+
+  <div class="geo-wrap reveal reveal-delay-1">
+
+    <div class="bar-chart">
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city">Teresina – PI <span style="font-size:var(--small-size);color:var(--muted)">(tag+DDD 86)</span></span>
+          <span class="bar-count" style="color:var(--cyan)">140 leads · 42,0%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:100%; background:var(--cyan)"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city">Caxias + região – MA <span style="font-size:var(--small-size);color:var(--muted)">(tag+DDD 99)</span></span>
+          <span class="bar-count" style="color:var(--green)">131 leads · 39,3%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:93%; background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city">Timon – MA</span>
+          <span class="bar-count" style="color:var(--gold)">22 leads · 6,6%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:16%; background:var(--gold)"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city">São Luís – MA <span style="font-size:var(--small-size);color:var(--muted)">(DDD 98)</span></span>
+          <span class="bar-count" style="color:var(--purple)">18 leads · 5,4%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:13%; background:var(--purple)"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city">Picos-PI / sul PI <span style="font-size:var(--small-size);color:var(--muted)">(DDD 89)</span></span>
+          <span class="bar-count" style="color:var(--muted)">6 leads · 1,8%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:4%; background:var(--muted)"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-city" style="color:var(--muted)">Outros (CE, PA, RJ, RS…)</span>
+          <span class="bar-count" style="color:var(--muted)">16 leads · 4,8%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill-h" style="--w:3%; background:rgba(136,146,170,0.4)"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:var(--gap-sm);margin-top:var(--gap-sm);flex-wrap:wrap">
+        <span class="tag tag-cyan">PI: 146 leads · 43,8%</span>
+        <span class="tag tag-green">MA: 177 leads · 53,2%</span>
+        <span class="tag" style="background:rgba(136,146,170,0.1);color:var(--muted);border:1px solid rgba(136,146,170,0.2)">Outros: 10 · 3%</span>
+      </div>
+    </div>
+
+    <div class="geo-insights">
+      <div class="insight-card">
+        <div class="iheader">
+          <div class="idot" style="background:var(--red)"></div>
+          <div class="ititle">Teresina é 42% da base real</div>
+        </div>
+        <div class="itext">Antes parecia 23,4% (só tag). Com inferência por DDD 86, são <strong>140 de 333 leads</strong>. Campanha dedicada com formulário de qualificação de 8 perguntas incluindo viabilidade de deslocamento.</div>
+      </div>
+      <div class="insight-card">
+        <div class="iheader">
+          <div class="idot" style="background:var(--green)"></div>
+          <div class="ititle">Teresina converte quando qualificado</div>
+        </div>
+        <div class="itext">Antônio João (Teresina, 57a, motorista) foi avaliar e <strong>fechou R$5.850</strong>. Leads que respondem "nada me impediria" no formulário têm alta intenção de viajar.</div>
+      </div>
+      <div class="insight-card">
+        <div class="iheader">
+          <div class="idot" style="background:var(--purple)"></div>
+          <div class="ititle">São Luís surge com 18 leads</div>
+        </div>
+        <div class="itext">Não aparecia antes (sem tag). São Luís fica a ~360km — leads provavelmente no funil, mas nenhum na planilha de avaliações. Verificar se chegaram à consulta.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <span class="slide-num">04 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 5 — AVALIAÇÕES & CLOSE RATE
+     ==================================================== -->
+<section class="slide" id="s5" data-slide="5">
+  <div class="slide-header reveal">
+    <div class="slide-label">Avaliações — 29 leads</div>
+    <h2 class="slide-title">12 fechamentos · 6 perdas · 10 pipeline abril</h2>
+  </div>
+
+  <div class="eval-grid reveal reveal-delay-1">
+
+    <div>
+      <div class="section-label">Close rate por origem</div>
+      <div class="close-section">
+        <div class="close-bar-row">
+          <span class="clabel">Indicação</span>
+          <div class="close-track">
+            <div class="close-fill" style="--w:75%; background:var(--green)"></div>
+          </div>
+          <span class="close-pct" style="color:var(--green)">50–75%</span>
+        </div>
+        <div class="close-bar-row">
+          <span class="clabel">Tráfego</span>
+          <div class="close-track">
+            <div class="close-fill" style="--w:43%; background:var(--cyan)"></div>
+          </div>
+          <span class="close-pct" style="color:var(--cyan)">43%</span>
+        </div>
+        <div class="close-bar-row">
+          <span class="clabel">Orgânico</span>
+          <div class="close-track">
+            <div class="close-fill" style="--w:25%; background:var(--muted)"></div>
+          </div>
+          <span class="close-pct" style="color:var(--muted)">25%</span>
+        </div>
+      </div>
+
+      <div style="margin-top:var(--gap)">
+        <div class="section-label">Motivo das perdas (6 NÃO)</div>
+        <div style="display:flex;flex-direction:column;gap:var(--gap-sm);margin-top:0.5em">
+          <div style="display:flex;align-items:center;gap:var(--gap)">
+            <div style="font-family:'Syne',sans-serif;font-size:var(--h2-size);font-weight:800;color:var(--red);min-width:3rem">67%</div>
+            <div>
+              <div style="font-size:var(--body-size);font-weight:600;color:var(--text)">Ticket (preço)</div>
+              <div style="font-size:var(--small-size);color:var(--muted)">4 de 6 perdas — oferecer parcelamento</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:var(--gap-sm);flex-wrap:wrap">
+            <span class="tag tag-red">4 × TICKET</span>
+            <span class="tag tag-gold">1 × SEM RENDA</span>
+            <span class="tag tag-purple">1 × NÃO CONVENCI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Close rate por cidade (avaliados)</div>
+      <div class="city-table">
+        <div class="city-row">
+          <span class="city-name">Caxias – MA</span>
+          <span class="city-nums">20 av. → 7 fechados</span>
+          <span class="city-result warn">35%</span>
+        </div>
+        <div class="city-row">
+          <span class="city-name">Coelho Neto – MA</span>
+          <span class="city-nums">4 av. → 2 fechados</span>
+          <span class="city-result good">50%</span>
+        </div>
+        <div class="city-row">
+          <span class="city-name">Timon – MA</span>
+          <span class="city-nums">2 av. → 0 fechados</span>
+          <span class="city-result bad">0%</span>
+        </div>
+        <div class="city-row">
+          <span class="city-name">Teresina – PI ✦</span>
+          <span class="city-nums">1 av. → 1 fechado</span>
+          <span class="city-result great">100%</span>
+        </div>
+        <div class="city-row">
+          <span class="city-name">Coroatá – MA</span>
+          <span class="city-nums">1 av. → 1 fechado</span>
+          <span class="city-result good">100%</span>
+        </div>
+        <div class="city-row">
+          <span class="city-name">Graça Aranha – MA</span>
+          <span class="city-nums">1 av. → 1 fechado</span>
+          <span class="city-result good">100%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <span class="slide-num">05 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 6 — PIPELINE ABRIL
+     ==================================================== -->
+<section class="slide" id="s6" data-slide="6">
+  <div class="slide-header reveal">
+    <div class="slide-label">Pipeline Abril</div>
+    <h2 class="slide-title">10 pendentes · 4–6 fechamentos prováveis</h2>
+  </div>
+
+  <div class="pipeline-grid reveal reveal-delay-1">
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label hot">🔥 Quentes — fechar esta semana</div>
+
+      <div class="lead-card hot">
+        <div class="lead-name">Maria Ediluza</div>
+        <div class="lead-city">Coelho Neto · 56a · F</div>
+        <div class="lead-status"><strong>"Usar cartão somente dia 06/04 – Tônus D"</strong><br>Já decidiu, data marcada.</div>
+      </div>
+
+      <div class="lead-card hot">
+        <div class="lead-name">Sebastiana</div>
+        <div class="lead-city">Caxias · 72a · F · Indicação</div>
+        <div class="lead-status"><strong>"Fechou para o irmão e vai fazer a dela logo após"</strong><br>Irmão (Silvio) fechou R$6.499.</div>
+      </div>
+
+      <div class="lead-card warm">
+        <div class="lead-name">Josiel Rocha</div>
+        <div class="lead-city">Caxias · 39a · M</div>
+        <div class="lead-status warn"><strong>Em andamento 01/04</strong></div>
+      </div>
+
+      <div class="lead-card warm">
+        <div class="lead-name">Maria José</div>
+        <div class="lead-city">Caxias · 63a · F</div>
+        <div class="lead-status warn"><strong>Confirmar 06–07/04</strong></div>
+      </div>
+    </div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label hot" style="background:rgba(155,109,255,0.12);color:var(--purple)">⏳ Em negociação</div>
+
+      <div class="lead-card warm">
+        <div class="lead-name">Valdeci Fiares</div>
+        <div class="lead-city">Coelho Neto · 66a · M</div>
+        <div class="lead-status warn"><strong>Em negociação 01/04</strong><br>5 comorbidades, motivação alta.</div>
+      </div>
+
+      <div class="lead-card warm">
+        <div class="lead-name">Layany Sthefany</div>
+        <div class="lead-city">Caxias · 38a · F · Orgânico</div>
+        <div class="lead-status warn"><strong>Em negociação 01/04</strong><br>Técnica de enfermagem, entende o protocolo.</div>
+      </div>
+
+      <div class="pipeline-col-label cold" style="margin-top:var(--gap-sm)">❄️ Frios — tentar 1x e arquivar</div>
+
+      <div class="lead-card">
+        <div class="lead-city" style="font-size:var(--small-size)">Rosyone, Marineide, Rose Mary, Maria Lindalva</div>
+        <div class="lead-status"><strong style="color:var(--muted)">Retorno marcado para 26/03 — não retornaram.</strong> Ligar uma vez e encerrar.</div>
+      </div>
+
+      <div style="background:var(--bg3);border-radius:0.7rem;padding:clamp(0.6rem,1.5vw,1rem);border:1px solid rgba(0,255,136,0.2);margin-top:var(--gap-sm)">
+        <div style="font-size:var(--small-size);color:var(--muted)">Pipeline estimado</div>
+        <div style="font-family:'Syne',sans-serif;font-size:var(--h2-size);font-weight:800;color:var(--green)">+R$20–30k</div>
+        <div style="font-size:var(--small-size);color:var(--muted)">se fechar 4–6 quentes</div>
+      </div>
+    </div>
+
+  </div>
+
+  <span class="slide-num">06 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 7 — META ADS
+     ==================================================== -->
+<section class="slide" id="s7" data-slide="7">
+  <div class="slide-header reveal">
+    <div class="slide-label">Meta Ads · Criativos</div>
+    <h2 class="slide-title">7 dias até 19/03 · CPL médio R$15,57</h2>
+  </div>
+
+  <div class="ads-table reveal reveal-delay-1">
+    <div class="ad-header-row">
+      <span>Criativo</span>
+      <span>Gasto</span>
+      <span>Leads</span>
+      <span>CPL</span>
+      <span>Ação</span>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads reporter teresina</span>
+      <span class="ad-val" style="color:var(--muted)">R$64</span>
+      <span class="ad-val" style="color:var(--text)">11</span>
+      <span class="ad-val ad-cpl-green">R$5,85</span>
+      <div class="ad-action"><span class="action-chip action-escalar">⬆ Escalar</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads impotência paty</span>
+      <span class="ad-val" style="color:var(--muted)">R$12</span>
+      <span class="ad-val" style="color:var(--text)">2</span>
+      <span class="ad-val ad-cpl-green">R$6,00</span>
+      <div class="ad-action"><span class="action-chip action-escalar">⬆ Escalar</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads glicose controlada</span>
+      <span class="ad-val" style="color:var(--muted)">R$44</span>
+      <span class="ad-val" style="color:var(--text)">5</span>
+      <span class="ad-val ad-cpl-cyan">R$8,72</span>
+      <div class="ad-action"><span class="action-chip action-manter">◼ Manter</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads caxias paty</span>
+      <span class="ad-val" style="color:var(--muted)">R$357</span>
+      <span class="ad-val" style="color:var(--text)">25</span>
+      <span class="ad-val ad-cpl-cyan">R$14,29</span>
+      <div class="ad-action"><span class="action-chip action-manter">◼ Manter</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads reporter caxias</span>
+      <span class="ad-val" style="color:var(--muted)">R$284</span>
+      <span class="ad-val" style="color:var(--text)">15</span>
+      <span class="ad-val ad-cpl-gold">R$18,95</span>
+      <div class="ad-action"><span class="action-chip action-reduzir">↓ Reduzir</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads vídeo caxias</span>
+      <span class="ad-val" style="color:var(--muted)">R$60</span>
+      <span class="ad-val" style="color:var(--text)">2</span>
+      <span class="ad-val ad-cpl-red">R$30,11</span>
+      <div class="ad-action"><span class="action-chip action-pausar">✕ Pausar</span></div>
+    </div>
+
+    <div class="ad-row">
+      <span class="ad-name">ads exames jonas</span>
+      <span class="ad-val" style="color:var(--muted)">R$139</span>
+      <span class="ad-val" style="color:var(--text)">4</span>
+      <span class="ad-val ad-cpl-red">R$34,69</span>
+      <div class="ad-action"><span class="action-chip action-pausar">✕ Pausar</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:var(--gap);margin-top:var(--gap-sm)" class="reveal reveal-delay-2">
+    <span class="tag tag-gold">⚠ Token Meta expirado — dados parciais 7d até 19/03</span>
+    <span class="tag tag-green">Renovar System User token no BM</span>
+  </div>
+
+  <span class="slide-num">07 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 8 — GARGALOS
+     ==================================================== -->
+<section class="slide" id="s8" data-slide="8">
+  <div class="slide-header reveal">
+    <div class="slide-label">Gargalos Críticos</div>
+    <h2 class="slide-title">4 pontos que travam o crescimento</h2>
+  </div>
+
+  <div class="gap-grid reveal reveal-delay-1">
+
+    <div class="gap-card g1">
+      <div class="gap-num-big">17,4%</div>
+      <div class="gap-title">Ligações sem retorno</div>
+      <div class="gap-text">443 ligações feitas. Só <strong>77 atendidas</strong>. O SDR está no canal errado — <strong>WhatsApp converte 32 vs 20 por ligação</strong>. Ligar 1x, não atendeu → mensagem.</div>
+      <div class="gap-action">Mudar protocolo SDR</div>
+    </div>
+
+    <div class="gap-card g2">
+      <div class="gap-num-big">38%</div>
+      <div class="gap-title">Leads que não interagem</div>
+      <div class="gap-text">187 leads ignoram o primeiro contato. Provável causa: <strong>tempo de resposta alto</strong>. Lead enviado às 22h, SDR responde às 9h. Janela ideal: <strong>5 min</strong>.</div>
+      <div class="gap-action">Medir tempo_resposta_sdr.py</div>
+    </div>
+
+    <div class="gap-card g3">
+      <div class="gap-num-big">67%</div>
+      <div class="gap-title">Perdas por preço</div>
+      <div class="gap-text">4 de 6 perdas = ticket. Marconi (47a, 1 ano diagnóstico) <strong>perdido por preço sendo lead novo</strong> — poderia fechar R$3.800. Falta opção de entrada + parcelamento agressivo.</div>
+      <div class="gap-action">Criar opção de entrada menor</div>
+    </div>
+
+    <div class="gap-card g4">
+      <div class="gap-num-big">∅</div>
+      <div class="gap-title">Indicação sem programa formal</div>
+      <div class="gap-text">Indicação tem <strong>50–75% close rate</strong> — melhor canal. Mas os 4 indicados entraram espontaneamente. Silvio fechou R$6.499 e já indicou a irmã. <strong>Não existe incentivo formal.</strong></div>
+      <div class="gap-action">Criar programa de indicação</div>
+    </div>
+
+  </div>
+
+  <span class="slide-num">08 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 9 — ACHADOS
+     ==================================================== -->
+<section class="slide" id="s9" data-slide="9">
+  <div class="slide-header reveal">
+    <div class="slide-label">Achados da Análise</div>
+    <h2 class="slide-title">3 insights não óbvios</h2>
+  </div>
+
+  <div class="findings-grid reveal reveal-delay-1">
+
+    <div class="finding-card">
+      <div class="finding-icon">⏳</div>
+      <div class="finding-title">
+        <span>Lead de 5 meses</span>
+        <span>converteu R$6.000</span>
+      </div>
+      <div class="finding-stat" style="color:var(--gold)">5 meses</div>
+      <div class="finding-text">
+        Ademar entrou em <strong>21/10/2025</strong>. Avaliou em <strong>30/03/2026</strong>. Fechou <strong>R$6.000</strong> plano Reverse. Os 149 leads antigos reativados valem ouro — ciclo longo é normal aqui.
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-icon">🧠</div>
+      <div class="finding-title">
+        <span>Formulário Teresina</span>
+        <span>qualifica intenção</span>
+      </div>
+      <div class="finding-stat" style="color:var(--cyan)">8 perguntas</div>
+      <div class="finding-text">
+        Campanha Teresina usa form com pergunta <strong>"o que te impediria de ir a Caxias?"</strong> e <strong>"visitas semanais seriam viáveis?"</strong>. Leads que respondem "não_teria_como" devem sair da fila ativa do SDR imediatamente.
+      </div>
+    </div>
+
+    <div class="finding-card">
+      <div class="finding-icon">👥</div>
+      <div class="finding-title">
+        <span>Irmãos fecharam</span>
+        <span>R$12.998 juntos</span>
+      </div>
+      <div class="finding-stat" style="color:var(--green)">R$12.998</div>
+      <div class="finding-text">
+        Silvio fechou <strong>R$6.499</strong>. Indicou a irmã Sebastiana que quer fechar <strong>R$6.499</strong> logo após. Indicação viral acontece espontaneamente — com programa formal, escala. Close rate de indicação: <strong>50–75%</strong>.
+      </div>
+    </div>
+
+  </div>
+
+  <span class="slide-num">09 / 10</span>
+</section>
+
+
+<!-- ====================================================
+     SLIDE 10 — PRIORIDADES
+     ==================================================== -->
+<section class="slide" id="s10" data-slide="10">
+  <div class="slide-header reveal">
+    <div class="slide-label">Próximos Passos</div>
+    <h2 class="slide-title">6 ações em ordem de impacto</h2>
+  </div>
+
+  <div class="priority-list reveal reveal-delay-1">
+
+    <div class="priority-item">
+      <div class="priority-num">01</div>
+      <div class="priority-text">
+        Fechar Maria Ediluza (06/04) + Sebastiana (esta semana)
+        <span>Impacto imediato ~R$13k · ambas já decidiram</span>
+      </div>
+      <span class="tag tag-red">Hoje</span>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">02</div>
+      <div class="priority-text">
+        Renovar token Meta Ads no Business Manager
+        <span>BM → Usuários do Sistema → Seven Midas API → Gerar token</span>
+      </div>
+      <span class="tag tag-gold">Hoje</span>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">03</div>
+      <div class="priority-text">
+        Filtrar leads "não_teria_como" no ZapClinic → tirar da fila SDR
+        <span>Campanha Teresina já captura a resposta no formulário</span>
+      </div>
+      <span class="tag tag-cyan">Esta semana</span>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">04</div>
+      <div class="priority-text">
+        Pausar "ads exames jonas" (CPL R$34,69) e "ads vídeo caxias" (CPL R$30,11)
+        <span>Redirecionar budget para "reporter teresina" e "impotência paty"</span>
+      </div>
+      <span class="tag tag-cyan">Esta semana</span>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">05</div>
+      <div class="priority-text">
+        Mudar protocolo SDR: ligar 1x → WhatsApp imediato se não atender
+        <span>32 agendamentos por mensagem vs 20 por ligação — dados confirmam</span>
+      </div>
+      <span class="tag tag-green">Este mês</span>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-num">06</div>
+      <div class="priority-text">
+        Criar programa formal de indicação (incentivo para pacientes indicarem)
+        <span>Close rate 50–75% · Silvio + Sebastiana já geraram R$12.998 espontaneamente</span>
+      </div>
+      <span class="tag tag-purple">Este mês</span>
+    </div>
+
+  </div>
+
+  <span class="slide-num">10 / 10</span>
+</section>
+
+</main>
+
+<script>
+// ============================================
+// PRESENTATION CONTROLLER
+// ============================================
+class Presentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.total = this.slides.length;
+    this.current = 0;
+    this.isScrolling = false;
+    this.touchStartY = 0;
+
+    this.progressBar = document.getElementById('progressBar');
+    this.kbHint = document.getElementById('kbHint');
+    this.navContainer = document.getElementById('navDots');
+
+    this.buildNav();
+    this.bindEvents();
+    this.setupReveal();
+    this.onSlideChange(0);
+
+    // Show hint briefly
+    setTimeout(() => {
+      this.kbHint.classList.add('visible');
+      setTimeout(() => this.kbHint.classList.remove('visible'), 3000);
+    }, 1500);
+  }
+
+  buildNav() {
+    this.slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot';
+      dot.setAttribute('aria-label', `Slide ${i + 1}`);
+      dot.addEventListener('click', () => this.goTo(i));
+      this.navContainer.appendChild(dot);
+    });
+    this.dots = Array.from(this.navContainer.querySelectorAll('.nav-dot'));
+  }
+
+  onSlideChange(index) {
+    this.current = index;
+    const pct = ((index + 1) / this.total) * 100;
+    this.progressBar.style.width = pct + '%';
+    this.dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    this.triggerReveal(index);
+    this.triggerBars(index);
+  }
+
+  goTo(index) {
+    if (index < 0 || index >= this.total) return;
+    this.slides[index].scrollIntoView({ behavior: 'smooth' });
+    this.onSlideChange(index);
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  bindEvents() {
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowDown','ArrowRight','Space','PageDown'].includes(e.code)) { e.preventDefault(); this.next(); }
+      if (['ArrowUp','ArrowLeft','PageUp'].includes(e.code)) { e.preventDefault(); this.prev(); }
+    });
+
+    // Mouse wheel (debounced)
+    let wheelTimer = null;
+    document.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (wheelTimer) return;
+      if (e.deltaY > 30) this.next();
+      else if (e.deltaY < -30) this.prev();
+      wheelTimer = setTimeout(() => { wheelTimer = null; }, 800);
+    }, { passive: false });
+
+    // Touch
+    document.addEventListener('touchstart', (e) => {
+      this.touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const dy = this.touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 50) { dy > 0 ? this.next() : this.prev(); }
+    }, { passive: true });
+
+    // Scroll observer to sync dots/progress
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const idx = this.slides.indexOf(entry.target);
+          if (idx !== -1 && idx !== this.current) this.onSlideChange(idx);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    this.slides.forEach(s => observer.observe(s));
+  }
+
+  setupReveal() {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+        }
+      });
+    }, { threshold: 0.2 });
+    this.slides.forEach(s => revealObserver.observe(s));
+  }
+
+  triggerReveal(index) {
+    const slide = this.slides[index];
+    slide.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  }
+
+  triggerBars(index) {
+    const slide = this.slides[index];
+    // Activate fill bars after a short delay
+    setTimeout(() => {
+      slide.querySelectorAll('.bar-fill-h').forEach(el => el.classList.add('active'));
+      slide.querySelectorAll('.close-fill').forEach(el => el.classList.add('active'));
+      slide.querySelectorAll('.funnel-step .bar-fill').forEach(el => el.classList.add('active'));
+    }, 300);
+  }
+}
+
+// Boot
+document.addEventListener('DOMContentLoaded', () => new Presentation());
+</script>
+</body>
+</html>
