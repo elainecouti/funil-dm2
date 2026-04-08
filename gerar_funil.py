@@ -137,11 +137,18 @@ RE_REAGENDOU = re.compile(r"\breagendou\b", re.I)
 def _norm_wpp(wpp):
     return re.sub(r"\D", "", wpp)[-11:] if wpp else ""
 
+def _parse_data(s):
+    """Converte 'DD/MM/YYYY às HHhMMm' em datetime para ordenação correta."""
+    try:
+        return datetime.strptime(s[:10], "%d/%m/%Y")
+    except Exception:
+        return datetime.min
+
 def detect_agendados(dialogs):
     """Retorna (agendados, reagendados) como listas separadas de dicts únicos por lead."""
     agendados, reagendados = [], []
     seen_ag, seen_re = set(), set()
-    for d in sorted(dialogs, key=lambda x: x.get("data", ""), reverse=True):
+    for d in sorted(dialogs, key=lambda x: _parse_data(x.get("data", "")), reverse=True):
         texto = d.get("dialogo", "")
         key = _norm_wpp(d.get("whatsapp")) or d.get("lead", "")
         if not key:
@@ -390,7 +397,7 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
   <div class="sec-title">Últimos agendamentos — {m['total_agendados']} total</div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>#</th><th>Lead</th><th>Data</th></tr></thead>
+      <thead><tr><th>#</th><th>Lead</th><th>Agendado em</th></tr></thead>
       <tbody>{rows if rows else '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:16px">Nenhum agendamento detectado</td></tr>'}</tbody>
     </table>
   </div>
