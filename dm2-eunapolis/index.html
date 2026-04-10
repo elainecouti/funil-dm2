@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eunápolis — Análise Março 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Space Grotesk',system-ui,sans-serif;background:#080a0f;color:#e8eaed;min-height:100vh;padding:0 0 60px}
+  
+  /* Header */
+  .hero{background:linear-gradient(135deg,#0d1117 0%,#0a1628 50%,#0d1117 100%);padding:48px 40px 40px;border-bottom:1px solid #1e2027;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,229,199,.08) 0%,transparent 70%);pointer-events:none}
+  .hero::after{content:'';position:absolute;bottom:-30%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(99,102,241,.06) 0%,transparent 70%);pointer-events:none}
+  .hero-inner{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+  .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,199,.1);border:1px solid rgba(0,229,199,.25);border-radius:20px;padding:4px 14px;font-size:12px;color:#00e5c7;font-weight:600;margin-bottom:16px;letter-spacing:.5px}
+  .hero-title{font-size:36px;font-weight:800;line-height:1.1;margin-bottom:8px;background:linear-gradient(135deg,#fff 0%,#a0aec0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-sub{font-size:15px;color:#7a7a7a;margin-bottom:32px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+  .kpi{background:rgba(255,255,255,.03);border:1px solid #1e2027;border-radius:14px;padding:18px;position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,#00e5c7)}
+  .kpi-label{font-size:11px;color:#5a5a5a;font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+  .kpi-val{font-size:28px;font-weight:800;color:var(--c,#e8eaed);line-height:1}
+  .kpi-sub{font-size:12px;color:#5a5a5a;margin-top:4px}
+  
+  /* Layout */
+  .container{max-width:1400px;margin:0 auto;padding:0 40px}
+  .section{margin-top:48px}
+  .section-title{font-size:13px;font-weight:700;color:#00e5c7;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,#1e2027,transparent)}
+  
+  /* Grid */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  
+  /* Cards */
+  .card{background:#0e1017;border:1px solid #1e2027;border-radius:16px;padding:24px;position:relative;overflow:hidden}
+  .card-title{font-size:13px;color:#5a5a5a;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:16px}
+  
+  /* Tables */
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:11px;color:#5a5a5a;text-transform:uppercase;letter-spacing:.8px;padding:0 12px 10px;font-weight:600;border-bottom:1px solid #1e2027}
+  td{padding:10px 12px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  
+  /* Gender bars */
+  .gen-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #1e2027}
+  .gen-row:last-child{border:none}
+  .gen-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .gen-label{font-size:14px;font-weight:600;margin-bottom:2px}
+  .gen-metrics{display:flex;gap:16px;font-size:12px;color:#7a7a7a;flex-wrap:wrap}
+  .gen-highlight{color:#00e5c7;font-weight:700}
+  .progress-bar{background:#1e2027;border-radius:4px;height:6px;flex:1;min-width:80px}
+  .progress-fill{height:6px;border-radius:4px}
+  
+  /* Canal pills */
+  .canal-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .canal-item:last-child{border:none}
+  .canal-name{font-size:14px;font-weight:600;width:100px;flex-shrink:0}
+  .canal-bar{flex:1;background:#1e2027;border-radius:4px;height:8px;overflow:hidden}
+  .canal-fill{height:8px;border-radius:4px;background:linear-gradient(to right,#00e5c7,#6366f1)}
+  .canal-stats{display:flex;gap:10px;font-size:12px;color:#7a7a7a;width:180px;justify-content:flex-end;flex-shrink:0}
+  
+  /* Profissoes */
+  .prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .prof-item{background:#131620;border:1px solid #1e2027;border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center}
+  .prof-name{font-size:13px;color:#c0c0c0}
+  .prof-val{font-size:14px;font-weight:700;color:#00e5c7}
+  
+  /* Criativos */
+  .ads-grid{display:flex;flex-direction:column;gap:20px}
+  .ad-card{background:#0e1017;border:1px solid #1e2027;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:220px 1fr;gap:0}
+  @media(max-width:768px){.ad-card{grid-template-columns:1fr}}
+  .ad-thumb-wrap{background:#131620;position:relative;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;min-height:180px}
+  .ad-thumb{width:100%;object-fit:cover;display:block}
+  .ad-link-btn{position:absolute;bottom:10px;right:10px;background:rgba(0,229,199,.15);border:1px solid #00e5c7;color:#00e5c7;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;transition:.2s}
+  .ad-link-btn:hover{background:rgba(0,229,199,.3)}
+  .ad-info{padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+  .ad-name{font-size:16px;font-weight:700;color:#e8eaed}
+  .ad-meta{display:flex;flex-wrap:wrap;gap:6px}
+  .tag-camp{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#818cf8;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+  .tag-adset{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:#f59e0b;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+  .ad-title{font-size:13px;font-weight:600;color:#00e5c7;font-style:italic}
+  .ad-body{font-size:12px;color:#7a7a7a;line-height:1.6;border-left:2px solid #1e2027;padding-left:10px}
+  .ad-fechou{font-size:12px;color:#00e5c7;background:rgba(0,229,199,.08);border:1px solid rgba(0,229,199,.2);border-radius:8px;padding:8px 12px;line-height:1.6}
+  .ad-metrics{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .metric-pill{background:#131620;border:1px solid #242733;border-radius:8px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;min-width:70px}
+  .m-label{font-size:10px;color:#5a5a5a;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .m-val{font-size:15px;font-weight:700;color:#e8eaed}
+  
+  /* Insight boxes */
+  .insight{background:linear-gradient(135deg,rgba(0,229,199,.06),rgba(99,102,241,.04));border:1px solid rgba(0,229,199,.15);border-radius:12px;padding:16px 20px;margin-top:16px}
+  .insight strong{color:#00e5c7}
+  
+  /* Jornada */
+  .jornada-card{background:#0e1017;border:1px solid #1e2027;border-radius:16px;padding:24px}
+  
+  /* Tag chips */
+  .chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+  .chip-green{background:rgba(0,229,199,.15);color:#00e5c7;border:1px solid rgba(0,229,199,.3)}
+  .chip-yellow{background:rgba(255,170,44,.15);color:#ffaa2c;border:1px solid rgba(255,170,44,.3)}
+  .chip-red{background:rgba(255,77,106,.15);color:#ff4d6a;border:1px solid rgba(255,77,106,.3)}
+  
+  .divider{height:1px;background:linear-gradient(to right,transparent,#1e2027 30%,#1e2027 70%,transparent);margin:40px 0}
+  
+  /* Scatter-style profissão */
+  .prof-scatter{display:flex;flex-direction:column;gap:8px}
+  .prof-bar-row{display:flex;align-items:center;gap:12px}
+  .prof-bar-name{font-size:12px;color:#a0a0a0;width:140px;flex-shrink:0;text-align:right}
+  .prof-bar-outer{flex:1;background:#1e2027;border-radius:4px;height:8px}
+  .prof-bar-inner{height:8px;border-radius:4px;background:linear-gradient(to right,#00e5c7,#6366f1)}
+  .prof-bar-val{font-size:12px;font-weight:700;color:#00e5c7;width:80px;flex-shrink:0}
+
+  footer{text-align:center;color:#2a2a2a;font-size:12px;margin-top:60px;padding:20px}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🟢 ANÁLISE CONCLUÍDA</div>
+    <div class="hero-title">DM2 Eunápolis — Março 2026</div>
+    <div class="hero-sub">Cruzamento completo: Meta Ads · ZapClinic · Avaliações · Fechamentos</div>
+    <div class="kpis">
+      <div class="kpi" style="--c:#00e5c7">
+        <div class="kpi-label">Investimento</div>
+        <div class="kpi-val">R$5.307</div>
+        <div class="kpi-sub">Meta Ads março</div>
+      </div>
+      <div class="kpi" style="--c:#6366f1">
+        <div class="kpi-label">Leads ZapClinic</div>
+        <div class="kpi-val">461</div>
+        <div class="kpi-sub">CPL real R$9,13</div>
+      </div>
+      <div class="kpi" style="--c:#f59e0b">
+        <div class="kpi-label">Avaliações</div>
+        <div class="kpi-val">54</div>
+        <div class="kpi-sub">11,3% dos leads</div>
+      </div>
+      <div class="kpi" style="--c:#10b981">
+        <div class="kpi-label">Fechamentos</div>
+        <div class="kpi-val">17</div>
+        <div class="kpi-sub">Close rate 31%</div>
+      </div>
+      <div class="kpi" style="--c:#00e5c7">
+        <div class="kpi-label">Contratado</div>
+        <div class="kpi-val">R$138k</div>
+        <div class="kpi-sub">ROAS 26x</div>
+      </div>
+      <div class="kpi" style="--c:#ec4899">
+        <div class="kpi-label">Recebido</div>
+        <div class="kpi-val">R$78k</div>
+        <div class="kpi-sub">R$60k em aberto</div>
+      </div>
+      <div class="kpi" style="--c:#f59e0b">
+        <div class="kpi-label">Ticket médio</div>
+        <div class="kpi-val">R$8.150</div>
+        <div class="kpi-sub">Contrato</div>
+      </div>
+      <div class="kpi" style="--c:#6366f1">
+        <div class="kpi-label">CAC</div>
+        <div class="kpi-val">R$312</div>
+        <div class="kpi-sub">Invest ÷ fechamentos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- FUNIL -->
+  <div class="section">
+    <div class="section-title">Funil completo</div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px">
+        <div style="background:#1e2027;border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#6366f1">605</div>
+          <div style="font-size:11px;color:#5a5a5a;margin-top:2px">Meta Ads leads</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:#1e2027;border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#6366f1">461</div>
+          <div style="font-size:11px;color:#5a5a5a;margin-top:2px">ZapClinic únicos</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:#1e2027;border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#f59e0b">296</div>
+          <div style="font-size:11px;color:#ff4d6a;margin-top:2px">não interagiram (64%)</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:#1e2027;border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#f59e0b">60</div>
+          <div style="font-size:11px;color:#5a5a5a;margin-top:2px">agendados</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:#1e2027;border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#10b981">54</div>
+          <div style="font-size:11px;color:#5a5a5a;margin-top:2px">avaliações</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:linear-gradient(135deg,rgba(0,229,199,.15),rgba(16,185,129,.1));border:1px solid rgba(0,229,199,.3);border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#00e5c7">17</div>
+          <div style="font-size:11px;color:#00e5c7;margin-top:2px">fechamentos</div>
+        </div>
+        <div style="color:#2a2a2a;font-size:24px">→</div>
+        <div style="background:linear-gradient(135deg,rgba(0,229,199,.15),rgba(16,185,129,.1));border:1px solid rgba(0,229,199,.3);border-radius:8px;padding:10px 16px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:#00e5c7">R$138k</div>
+          <div style="font-size:11px;color:#00e5c7;margin-top:2px">receita</div>
+        </div>
+      </div>
+      <div class="insight" style="margin-top:20px">
+        <strong>Gargalo principal:</strong> lead → avaliação (11,3%). 296 leads não responderam no WhatsApp = R$3.400 queimado.
+        Leads que maturaram 8–30 dias antes de avaliar fecham a <strong>75% de taxa</strong>. Leads do mesmo mês: 21%.
+      </div>
+    </div>
+  </div>
+
+  <!-- GÊNERO + CANAL -->
+  <div class="section">
+    <div class="section-title">Gênero · Canal de origem</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Por gênero</div>
+        <div class="gen-row">
+          <div class="gen-icon" style="background:rgba(236,72,153,.15)">👩</div>
+          <div style="flex:1">
+            <div class="gen-label">Mulheres</div>
+            <div class="gen-metrics">
+              <span>31 avaliaram</span>
+              <span class="gen-highlight">10 fecharam (32%)</span>
+              <span>Ticket R$7.471</span>
+              <span>R$74.712 receita</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <div class="progress-bar"><div class="progress-fill" style="width:32%;background:#ec4899"></div></div>
+              <span style="font-size:12px;color:#ec4899;font-weight:700">32%</span>
+            </div>
+          </div>
+        </div>
+        <div class="gen-row">
+          <div class="gen-icon" style="background:rgba(99,102,241,.15)">👨</div>
+          <div style="flex:1">
+            <div class="gen-label">Homens</div>
+            <div class="gen-metrics">
+              <span>23 avaliaram</span>
+              <span class="gen-highlight">7 fecharam (30%)</span>
+              <span>Ticket R$9.121 ↑</span>
+              <span>R$63.844 receita</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <div class="progress-bar"><div class="progress-fill" style="width:30%;background:#6366f1"></div></div>
+              <span style="font-size:12px;color:#6366f1;font-weight:700">30%</span>
+            </div>
+          </div>
+        </div>
+        <div class="insight">
+          Close rate <strong>igual</strong> entre gêneros. Homens pagam <strong>22% a mais</strong> por contrato (R$9.121 vs R$7.471).
+          Mulheres = volume · Homens = ticket.
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-title">Canal de origem</div>
+        <div class="canal-item">
+          <div class="canal-name">Criativo</div>
+          <div class="canal-bar"><div class="canal-fill" style="width:83%"></div></div>
+          <div class="canal-stats">
+            <span>45 aval.</span>
+            <span style="color:#00e5c7;font-weight:700">15 fec.</span>
+            <span style="color:#f59e0b">33%</span>
+          </div>
+        </div><div class="canal-item">
+          <div class="canal-name">Indicação</div>
+          <div class="canal-bar"><div class="canal-fill" style="width:9%"></div></div>
+          <div class="canal-stats">
+            <span>5 aval.</span>
+            <span style="color:#00e5c7;font-weight:700">1 fec.</span>
+            <span style="color:#f59e0b">20%</span>
+          </div>
+        </div><div class="canal-item">
+          <div class="canal-name">Instagram</div>
+          <div class="canal-bar"><div class="canal-fill" style="width:4%"></div></div>
+          <div class="canal-stats">
+            <span>2 aval.</span>
+            <span style="color:#00e5c7;font-weight:700">1 fec.</span>
+            <span style="color:#f59e0b">50%</span>
+          </div>
+        </div><div class="canal-item">
+          <div class="canal-name">Avulso</div>
+          <div class="canal-bar"><div class="canal-fill" style="width:2%"></div></div>
+          <div class="canal-stats">
+            <span>1 aval.</span>
+            <span style="color:#00e5c7;font-weight:700">0 fec.</span>
+            <span style="color:#f59e0b">0%</span>
+          </div>
+        </div><div class="canal-item">
+          <div class="canal-name">Sispug</div>
+          <div class="canal-bar"><div class="canal-fill" style="width:2%"></div></div>
+          <div class="canal-stats">
+            <span>1 aval.</span>
+            <span style="color:#00e5c7;font-weight:700">0 fec.</span>
+            <span style="color:#f59e0b">0%</span>
+          </div>
+        </div>
+        <div class="insight">
+          <strong>Meta Ads</strong> gerou R$120k (87% da receita). Indicação surpreende negativamente: 20% CR vs 33% do criativo.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CIDADES -->
+  <div class="section">
+    <div class="section-title">Taxa de conversão por cidade</div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Cidade</th><th>Avaliaram</th><th>Fecharam</th><th>Close Rate</th><th style="text-align:right">Receita</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td>Santa Maria</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:100%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">100%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$6,300</td>
+        </tr>
+        <tr>
+          <td>Cumuruxatiba</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:100%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">100%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$6,924</td>
+        </tr>
+        <tr>
+          <td>Itororó</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:100%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">100%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$15,600</td>
+        </tr>
+        <tr>
+          <td>Cabralia</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:100%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">100%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$2,920</td>
+        </tr>
+        <tr>
+          <td>Porto Seguro</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">2</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$12,164</td>
+        </tr>
+        <tr>
+          <td>Camacan</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">2</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$16,944</td>
+        </tr>
+        <tr>
+          <td>Belmonte</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$4,764</td>
+        </tr>
+        <tr>
+          <td>Zona rural</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$7,300</td>
+        </tr>
+        <tr>
+          <td>Itabela</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$7,080</td>
+        </tr>
+        <tr>
+          <td>Arraial</td>
+          <td style="text-align:center">3</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ffaa2c;height:6px;border-radius:4px;width:33%"></div>
+              </div>
+              <span style="color:#ffaa2c;font-weight:700">33%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$5,280</td>
+        </tr>
+        <tr>
+          <td>Eunápolis</td>
+          <td style="text-align:center">18</td>
+          <td style="text-align:center">4</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#e8eaed;height:6px;border-radius:4px;width:22%"></div>
+              </div>
+              <span style="color:#e8eaed;font-weight:700">22%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$46,440</td>
+        </tr>
+        <tr>
+          <td>Trancoso</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#e8eaed;height:6px;border-radius:4px;width:20%"></div>
+              </div>
+              <span style="color:#e8eaed;font-weight:700">20%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$6,840</td>
+        </tr>
+        <tr>
+          <td>Vera cruz</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Alcobaça</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Itapebi</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Teixeira f</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Itamaraju</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>São João d s</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Canavieras</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Itagimirim</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td>Guaratinga</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px;flex-shrink:0">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr></tbody>
+      </table>
+      <div class="insight">
+        <strong>Eunápolis (sede) tem CR 22%</strong> — o pior entre cidades com volume. Cidades satélite (Camacan, Porto Seguro) fecham 50%.
+        Leads que vêm de longe chegam decididos. Considerar copy geolocalizada para cidades satélite.
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFISSÕES -->
+  <div class="section">
+    <div class="section-title">Profissão dos compradores</div>
+    <div class="card">
+      <div class="prof-scatter">
+        <div class="prof-bar-row">
+          <div class="prof-bar-name">Coordenadora</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:100%"></div></div>
+          <div class="prof-bar-val">R$17,400</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Açougueiro</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:90%"></div></div>
+          <div class="prof-bar-val">R$15,600</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Caldeireiro</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:68%"></div></div>
+          <div class="prof-bar-val">R$11,880</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Comerciante</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:68%"></div></div>
+          <div class="prof-bar-val">R$11,760</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Labrador</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:42%"></div></div>
+          <div class="prof-bar-val">R$7,300</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Agente de saúde</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:41%"></div></div>
+          <div class="prof-bar-val">R$7,080</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Cozinheira</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:40%"></div></div>
+          <div class="prof-bar-val">R$6,924</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Aposentado</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:39%"></div></div>
+          <div class="prof-bar-val">R$6,840</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Assistente social</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:38%"></div></div>
+          <div class="prof-bar-val">R$6,600</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Do Lar</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:36%"></div></div>
+          <div class="prof-bar-val">R$6,300</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Vendedora</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:31%"></div></div>
+          <div class="prof-bar-val">R$5,400</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Padeiro</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:30%"></div></div>
+          <div class="prof-bar-val">R$5,280</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Servidor público</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:30%"></div></div>
+          <div class="prof-bar-val">R$5,184</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Aposentada</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:27%"></div></div>
+          <div class="prof-bar-val">R$4,764</div>
+        </div><div class="prof-bar-row">
+          <div class="prof-bar-name">Costureira</div>
+          <div class="prof-bar-outer"><div class="prof-bar-inner" style="width:17%"></div></div>
+          <div class="prof-bar-val">R$2,920</div>
+        </div>
+      </div>
+      <div class="insight">
+        <strong>Do Lar + Coordenadora</strong> lideram em receita. Trabalhadores braçais (açougueiro, caldeireiro, padeiro) pagam acima da média.
+        Perfil: renda estável, senso de urgência real (dor funcional = perda de capacidade laboral).
+      </div>
+    </div>
+  </div>
+
+  <!-- JORNADA DE COMPRA -->
+  <div class="section">
+    <div class="section-title">Jornada de compra — quando entrou no ZapClinic</div>
+    <div class="jornada-card">
+      <table>
+        <thead><tr>
+          <th>Mês entrada ZC</th><th>Avaliaram</th><th>Fecharam</th><th>Close Rate</th><th style="text-align:right">Receita</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td style="font-weight:600">Mar/2025</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:100%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">100%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$5,280</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Jun/2025</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">2</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$13,680</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Jul/2025</td>
+          <td style="text-align:center">3</td>
+          <td style="text-align:center">2</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:67%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">67%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$21,000</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Out/2025</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Dez/2025</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">1</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:50%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">50%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$2,920</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Fev/2026</td>
+          <td style="text-align:center">6</td>
+          <td style="text-align:center">4</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#00e5c7;height:6px;border-radius:4px;width:67%"></div>
+              </div>
+              <span style="color:#00e5c7;font-weight:700">67%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$24,072</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Mar/2026</td>
+          <td style="text-align:center">33</td>
+          <td style="text-align:center">7</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#e8eaed;height:6px;border-radius:4px;width:21%"></div>
+              </div>
+              <span style="color:#e8eaed;font-weight:700">21%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">R$71,704</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Sem ZC</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="background:#1e2027;border-radius:4px;height:6px;width:80px">
+                <div style="background:#ff4d6a;height:6px;border-radius:4px;width:0%"></div>
+              </div>
+              <span style="color:#ff4d6a;font-weight:700">0%</span>
+            </div>
+          </td>
+          <td style="text-align:right;color:#00e5c7">—</td>
+        </tr></tbody>
+      </table>
+      <div class="insight" style="margin-top:16px">
+        Lead que entra e avalia no <strong>mesmo mês: 21% CR</strong>. Lead que matura <strong>30+ dias antes: 67% CR</strong>.
+        29% da receita veio de leads dormentes de 2025. Não desativar base antiga.
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CRIATIVOS -->
+  <div class="section">
+    <div class="section-title">Performance de criativos — Março 2026</div>
+    <div class="ads-grid">
+      
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/595771022_868571835573744_7281488509660668804_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=ipqHNBx-iIYQ7kNvwFN32Af&_nc_oc=AdqA2-HKnCfn8kpSMYXhJ7FJ42n7irKJ25hTc5EjxfqVngV0IdMrxhqEgzL19Lx0LUJKvJ-Ijm5qawNi5NT2kHUp&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQGz38x1JjmZ1bmmhD7ZJzznJx_xZriOfMAgpjfKFsWHJupUHoho1k1TQ3uyUg_l2tbeKSCb0miSKA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af37LLkz73Eo1QdwRogrhXPWhfGvEZXFZMaP8i9yYtxT8w&oe=69DF2580" alt="ads viver sem dm2" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122286694916116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads viver sem dm2</div>
+        <div class="ad-meta">
+          <span class="tag-camp">19/01 [vendas] [eunapolis 40km] [30+] [L</span>
+          <span class="tag-adset">11/03 [vendas] [eunapolis 40km] [30</span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Nunca me disseram que dá pra viver sem diabetes...”<br>E se te contarmos que é possível — e que isso já está acontecendo todos os dias nas unidades Doutor DM2?<br><br>Aqui, trabalhamos com ...</div>
+        <div class="ad-fechou">✓ Maior volume geral — Neide + Osvaldo via mesmo vídeo</div>
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$6.92</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">94</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$651</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">2.09%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">43,570</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/628376198_1958665115052120_4753838943549674502_n.jpg?_nc_cat=103&ccb=1-7&_nc_ohc=4nDcGUEOywEQ7kNvwEHdoc3&_nc_oc=AdqekYfywoJNOZhBLwFdtSfNgGk6K5999-GHV9pSYIREDJq4kK8opZmBgQkszYtNUhhB4PJnl6-bM3NxKzvYCCWe&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQF_60diiM9AdD7zkB5NlOWja0yplFQpibcitvpwqtXie4oDvzoeJqVK0PXyGYt3VujFyAdCnBQVJg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_Af2-he4bdQAyWVvxsx6aHd8KBQ5dovyCXFzOTdYGqEzEcQ&oe=69DF0E40" alt="ads lorrayne fachada" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_1958665088385456' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads lorrayne fachada</div>
+        <div class="ad-meta">
+          <span class="tag-camp">06/02 [engajamento] [rmk90d] [eunapolis]</span>
+          <span class="tag-adset">14/02 [engajamento] [rmk90d] [eunap</span>
+        </div>
+        
+        <div class="ad-body">Você é diabético(a) e está cansado(a) de não saber exatamente como tratar a doença?<br><br> Cansado(a) de lidar com sintomas, insegurança e a sensação de que nada muda?<br><br>Se você mora em ...</div>
+        <div class="ad-fechou">✓ João de Jesus Xavier (R$6.840)<br>✓ Eliete Rodrigues (R$5.564 - menção)</div>
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$7.81</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">92</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$719</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">2.30%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">41,085</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/595871797_1657537368332352_7547514747869252315_n.jpg?_nc_cat=109&ccb=1-7&_nc_ohc=fVbO-KD8kWwQ7kNvwEUlTn9&_nc_oc=Adqx3wCBCeLtKeGZ101TuL9M_ydzkozcxsjKs6KkqwCccbZuUXo8_UXb5AA1oxtvjN-w1RE9fd5dI5QgXSY9P8dW&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQEjdoGL9Q6YHTdZl3kCAawH7FtSmpoXV6nAkIUxZkXvsMm22Xe4gQmz0Y1FPjRT9H0X-yPK92-9fA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af2OCeeV-2eukpHppFAdbQIJIvDXRuWJayWdYw_gxUJx4Q&oe=69DF1966" alt="ads glicada" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122286694958116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads glicada</div>
+        <div class="ad-meta">
+          <span class="tag-camp">19/01 [vendas] [eunapolis 40km] [30+] [L</span>
+          <span class="tag-adset">11/03 [vendas] [eunapolis 40km] [30</span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Você sabia que entender os números da glicose é o primeiro passo para mudar o rumo da sua saúde?<br>Foi dessa dúvida tão comum entre pacientes que nasceu o Método Reverse da Doutor DM...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$8.10</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">65</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$526</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">3.31%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">24,215</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/628790472_2403710490094173_1615963803433596500_n.jpg?_nc_cat=102&ccb=1-7&_nc_ohc=yiJpVve2x0UQ7kNvwEFrTCG&_nc_oc=Adq-sI9gfijAmc5mwV7-oz82WG4iTXOgL5zJcerlH9vSOWoNvBYMfDRdlVihd-wfNlpniyoG8bPfZ62vDSS8cd6m&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQFCN9HTg0wrGNUst0Cm24t-b_HftM0OKm1SV7zzlszeZSIh8JK5v-E5fCDwOq6__FOwsxk-qgGi0g&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=b696e2&_nc_sid=58080a&oh=00_Af0mzz07BKVOZDX1Zt19stdyOc3rsZfmMeL6krFvcitMGg&oe=69DF2854" alt="ads tadalafila" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122303118086116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads tadalafila</div>
+        <div class="ad-meta">
+          <span class="tag-camp">06/02 [engajamento] [rmk90d] [eunapolis]</span>
+          <span class="tag-adset">14/02 [engajamento] [rmk90d] [eunap</span>
+        </div>
+        
+        
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$7.99</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">57</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$455</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">3.27%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">17,204</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.13418-10/506924314_1944772159593503_6409725701330435910_n.jpg?_nc_cat=103&ccb=1-7&_nc_ohc=DBfbMpDv0b0Q7kNvwFzRq48&_nc_oc=AdpiypxGrXR-jo14ERrMjoaAN7OCSW4kuM5ztHel8rPdyEgwNQqgRCwaMP5TEzj8Z_w0nx_7jkPl_tu15looNQ5T&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQEkLXch9HBoFLWyzsyGYIm4lbmuILnHLSejVlUS7kGaFsDlDCthQ6aKxo2kTe3eYxmJxYUFldtsuw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=aaa768&_nc_sid=58080a&oh=00_Af0ygQF-NtoT2goahXPaHTAw7Ywlsz-6YDDTVilL-YCPgA&oe=69DF0625" alt="ads eunapolis cta" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122265051344116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads eunapolis cta</div>
+        <div class="ad-meta">
+          <span class="tag-camp">19/01 [vendas] [eunapolis 40km] [30+] [L</span>
+          <span class="tag-adset">14/02 [vendas] [eunapolis 40km] [30</span>
+        </div>
+        <div class="ad-title">"Clique aqui e fale com nossa equipe."</div>
+        <div class="ad-body">🎯 Diabetes tipo 2? Pré-diabetes? Você mora em Eunápolis?<br><br>🚨 Cansado de só trocar remédio e não ver resultado? Aqui é diferente!<br><br>Na Doutor DM2 Diabetes Eunápolis, você começa com u...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#ffaa2c">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#ffaa2c">R$9.70</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">55</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$533</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">1.32%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">51,574</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix24-1.fna.fbcdn.net/v/t15.5256-10/628359843_1529829731415937_4633189244296793378_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=Q9L-rQQ15B8Q7kNvwGeP788&_nc_oc=AdqQ_DBAVeuU0-YcoOhl-6HbkBUdM0KvfEWChmBzWp80N2UB0LosL9agMnKkekWm7sOLxrcH0fcB2gFJFql4OnyR&_nc_zt=23&_nc_ht=scontent.fvix24-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQGxQXN9av9BbIHPUjvHffFILX7RyvZRUMK7iZwk8iICgtaGfRZhztk4WBGFGseJIDOfAx_jKiRNIQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_Af0--gBOIERGfiTLvU_txjtA6aASa4kfWpuEfw1hB-OMwQ&oe=69DF2251" alt="ads celio" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_1529829704749273' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads celio</div>
+        <div class="ad-meta">
+          <span class="tag-camp">06/02 [engajamento] [rmk90d] [eunapolis]</span>
+          <span class="tag-adset">14/02 [engajamento] [rmk90d] [eunap</span>
+        </div>
+        
+        <div class="ad-body">Chegamos até o Célio em um momento em que ele mais precisava e ele conquistou uma nova consciência sobre o futuro da diabetes.<br><br>É gratificante ver que, assim como ele, tantos brasi...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$6.50</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">40</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$260</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">3.38%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">11,594</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/595771022_868571835573744_7281488509660668804_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=ipqHNBx-iIYQ7kNvwFN32Af&_nc_oc=AdqA2-HKnCfn8kpSMYXhJ7FJ42n7irKJ25hTc5EjxfqVngV0IdMrxhqEgzL19Lx0LUJKvJ-Ijm5qawNi5NT2kHUp&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQGz38x1JjmZ1bmmhD7ZJzznJx_xZriOfMAgpjfKFsWHJupUHoho1k1TQ3uyUg_l2tbeKSCb0miSKA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af37LLkz73Eo1QdwRogrhXPWhfGvEZXFZMaP8i9yYtxT8w&oe=69DF2580" alt="ads viver sem dm2" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122286694916116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads viver sem dm2</div>
+        <div class="ad-meta">
+          <span class="tag-camp">11/12 [trafego-perfil] [eunapolis] [obje</span>
+          <span class="tag-adset">14/02 [trafego-perfil] [eunapolis] </span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Nunca me disseram que dá pra viver sem diabetes...”<br>E se te contarmos que é possível — e que isso já está acontecendo todos os dias nas unidades Doutor DM2?<br><br>Aqui, trabalhamos com ...</div>
+        <div class="ad-fechou">✓ Maior volume geral — Neide + Osvaldo via mesmo vídeo</div>
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$7.48</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">39</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$292</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">2.67%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">11,517</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix24-1.fna.fbcdn.net/v/t15.5256-10/597426146_1606271670538435_565589129987040828_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=wHGN0B0emYAQ7kNvwGnX1z4&_nc_oc=AdrYQpswYNfvp3TLovaTaWE7zKaHbNg78Reo7k3o8x_YYITogqVXKk4h2S6LC-dE4-Hxzwkd_DOMOy65hVc3rH_G&_nc_zt=23&_nc_ht=scontent.fvix24-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQFD1RCJntCIRrVBbXPfcif0k8K7yccjZWEm5qukCmk55CIKYmeJ7bVvHWY0Kk0o_k6I2qET4OTPig&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af3X99MIZFxpmz2yUpRlg4G35t3ppqVL8SphDp1AVxZi4A&oe=69DF239D" alt="ads insulina" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122295238616116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads insulina</div>
+        <div class="ad-meta">
+          <span class="tag-camp">11/12 [trafego-perfil] [eunapolis] [obje</span>
+          <span class="tag-adset">14/02 [trafego-perfil] [eunapolis] </span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Você já se perguntou:<br>“Se insulina faz mal, por que eu preciso tomar todo dia?”<br><br>A verdade é simples:<br>a insulina não trata a causa do diabetes tipo 2.<br>Ela só apaga o incêndio do aç...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#00e5c7">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#00e5c7">R$7.20</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">25</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$180</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">4.14%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">6,980</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/595871797_1657537368332352_7547514747869252315_n.jpg?_nc_cat=109&ccb=1-7&_nc_ohc=fVbO-KD8kWwQ7kNvwEUlTn9&_nc_oc=Adqx3wCBCeLtKeGZ101TuL9M_ydzkozcxsjKs6KkqwCccbZuUXo8_UXb5AA1oxtvjN-w1RE9fd5dI5QgXSY9P8dW&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQEjdoGL9Q6YHTdZl3kCAawH7FtSmpoXV6nAkIUxZkXvsMm22Xe4gQmz0Y1FPjRT9H0X-yPK92-9fA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af2OCeeV-2eukpHppFAdbQIJIvDXRuWJayWdYw_gxUJx4Q&oe=69DF1966" alt="ads glicada" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122286694958116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads glicada</div>
+        <div class="ad-meta">
+          <span class="tag-camp">11/12 [trafego-perfil] [eunapolis] [obje</span>
+          <span class="tag-adset">14/02 [trafego-perfil] [eunapolis] </span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Você sabia que entender os números da glicose é o primeiro passo para mudar o rumo da sua saúde?<br>Foi dessa dúvida tão comum entre pacientes que nasceu o Método Reverse da Doutor DM...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#ffaa2c">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#ffaa2c">R$11.19</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">24</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$269</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">1.77%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">11,198</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/595771022_868571835573744_7281488509660668804_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=ipqHNBx-iIYQ7kNvwFN32Af&_nc_oc=AdqA2-HKnCfn8kpSMYXhJ7FJ42n7irKJ25hTc5EjxfqVngV0IdMrxhqEgzL19Lx0LUJKvJ-Ijm5qawNi5NT2kHUp&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQGz38x1JjmZ1bmmhD7ZJzznJx_xZriOfMAgpjfKFsWHJupUHoho1k1TQ3uyUg_l2tbeKSCb0miSKA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af37LLkz73Eo1QdwRogrhXPWhfGvEZXFZMaP8i9yYtxT8w&oe=69DF2580" alt="ads viver sem dm2" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122286694916116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads viver sem dm2</div>
+        <div class="ad-meta">
+          <span class="tag-camp">19/01 [vendas] [eunapolis 40km] [30+] [L</span>
+          <span class="tag-adset">14/02 [vendas] [eunapolis 40km] [30</span>
+        </div>
+        <div class="ad-title">"Clique aqui e descubra"</div>
+        <div class="ad-body">Nunca me disseram que dá pra viver sem diabetes...”<br>E se te contarmos que é possível — e que isso já está acontecendo todos os dias nas unidades Doutor DM2?<br><br>Aqui, trabalhamos com ...</div>
+        <div class="ad-fechou">✓ Maior volume geral — Neide + Osvaldo via mesmo vídeo</div>
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#ffaa2c">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#ffaa2c">R$12.73</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">24</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$306</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">1.44%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">24,945</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/649856450_3448311911993333_1655281596784009396_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=HlBpo9tbGxkQ7kNvwHtp6zL&_nc_oc=AdoYq8zQighTQ4C0WzOYGAl7NaC1b99lLfc2RSzKkD6OqJzzT-yJKMgQywIdaRjzoIJLWtbsbgBPdtmC57k2_h4y&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQFEIi-7M4EulrMFY5Lsr7kfrMSD1ptsYR0zRmSKY1zUwXO8GJFT5pAdT8LmbXQiHtRVrj4pYxeUQA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af36oPJI7u2-HbNrNgMH5h6eoy5yHRpb_CRhYTtNcFm6mA&oe=69DF188B" alt="ads mes do consumidor" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122308572656116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads mes do consumidor</div>
+        <div class="ad-meta">
+          <span class="tag-camp">06/02 [engajamento] [rmk90d] [eunapolis]</span>
+          <span class="tag-adset">14/02 [engajamento] [rmk90d] [eunap</span>
+        </div>
+        <div class="ad-title">"Clique aqui e agende agora"</div>
+        <div class="ad-body">Mês do Consumidor chegou e pode ser o começo da sua virada contra a diabetes tipo 2.<br><br>Você sabia que viver sem diabetes tipo 2 é possível?<br><br>Enquanto muitos acreditam que controlar ...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#ffaa2c">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#ffaa2c">R$9.08</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">22</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$200</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">2.50%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">11,810</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ad-card">
+      <div class="ad-thumb-wrap">
+        <img src="https://scontent.fvix22-1.fna.fbcdn.net/v/t15.5256-10/626134980_4474921832727394_2771193093803410631_n.jpg?_nc_cat=105&ccb=1-7&_nc_ohc=6WVy_oTRVtsQ7kNvwFdJ4hz&_nc_oc=AdrgKuXYasp6-fzye-PqN4z9iQ0TuqKarD0xfgcuBrzs6_n34ZPKXFHVyEgh3tO-Lih5iN7RD5SitEoMX8v81bn2&_nc_zt=23&_nc_ht=scontent.fvix22-1.fna&edm=AOgd6ZUEAAAA&_nc_gid=caimoGtndOXdYug-qrKUWA&_nc_tpa=Q5bMBQE-BEje_cfDwmJQw1V5hu-tZRYXL_taDvdPAJOOqxlZL_LZc1O9GJEQWD0lwle2rd0pDmLTOYEbWw&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af1tSvV-D3muE2vCo2snfseMNy9AQME4aTuRGv-C07W_tg&oe=69DF0795" alt="ads dm2 tem remissao" class="ad-thumb" onerror="this.style.display='none'">
+        <a href='https://www.facebook.com/189724544217269_122301607034116776' target='_blank' class='ad-link-btn'>Ver anúncio ↗</a>
+      </div>
+      <div class="ad-info">
+        <div class="ad-name">ads dm2 tem remissao</div>
+        <div class="ad-meta">
+          <span class="tag-camp">19/01 [vendas] [eunapolis 40km] [30+] [L</span>
+          <span class="tag-adset">11/03 [vendas] [eunapolis 40km] [30</span>
+        </div>
+        <div class="ad-title">"Descubra se seu caso tem reversão"</div>
+        <div class="ad-body">Diabetes tipo 2 tem remissão?<br>Na maioria dos casos, sim.<br><br>Mas existe um critério claro:<br>👉 como está seu pâncreas.<br><br>Sem exame de insulina, ninguém sabe.<br>Sem saber, muita gente desis...</div>
+        
+        <div class="ad-metrics">
+          <div class="metric-pill" style="border-color:#ffaa2c">
+            <span class="m-label">CPL</span>
+            <span class="m-val" style="color:#ffaa2c">R$10.07</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Leads</span>
+            <span class="m-val">21</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Invest</span>
+            <span class="m-val">R$212</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">CTR</span>
+            <span class="m-val">1.54%</span>
+          </div>
+          <div class="metric-pill">
+            <span class="m-label">Impressões</span>
+            <span class="m-val">15,995</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- RECEBIVEIS -->
+  <div class="section">
+    <div class="section-title">Inadimplência e recebíveis</div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Cliente</th><th>Contratado</th><th>Pago</th><th>%</th><th>Cidade</th><th>Profissão</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Eliete Rodrigues</td><td>R$5.564</td><td style="color:#ff4d6a">R$400</td><td><span class="chip chip-red">7%</span></td><td>Porto Seguro</td><td>Vendedora</td></tr>
+          <tr><td>Maria Emilia</td><td>R$6.300</td><td style="color:#ff4d6a">R$1.000</td><td><span class="chip chip-red">16%</span></td><td>Santa Maria</td><td>Do Lar</td></tr>
+          <tr><td>Osvaldo Ribeiro</td><td>R$5.184</td><td style="color:#ff4d6a">R$1.000</td><td><span class="chip chip-red">19%</span></td><td>Camacan</td><td>Servidor p.</td></tr>
+          <tr><td>Neílton Souza</td><td>R$11.880</td><td style="color:#ffaa2c">R$3.000</td><td><span class="chip chip-yellow">25%</span></td><td>Eunápolis</td><td>Caldeireiro</td></tr>
+          <tr><td>Gilvan Lima</td><td>R$15.600</td><td style="color:#ffaa2c">R$5.000</td><td><span class="chip chip-yellow">32%</span></td><td>Itororó</td><td>Açougueiro</td></tr>
+          <tr><td>Cleonice Bonfim</td><td>R$17.400</td><td style="color:#ffaa2c">R$5.800</td><td><span class="chip chip-yellow">33%</span></td><td>Eunápolis</td><td>Coordenadora</td></tr>
+          <tr><td>João de Jesus Xavier</td><td>R$6.840</td><td style="color:#ffaa2c">R$3.000</td><td><span class="chip chip-yellow">44%</span></td><td>Trancoso</td><td>Aposentado</td></tr>
+          <tr><td>Morenita Pires</td><td>R$11.760</td><td style="color:#10b981">R$7.000</td><td><span class="chip chip-yellow">60%</span></td><td>Camacan</td><td>Do Lar</td></tr>
+        </tbody>
+      </table>
+      <div class="insight">
+        <strong>R$60.358 em aberto</strong>. Eliete (7% pago) e Maria Emilia (16%) são os riscos imediatos.
+        Acionar cobrança antes de 60 dias da data de fechamento.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Seven Midas Intelligence · DM2 Eunápolis · Março 2026 · Gerado em 10/04/2026
+</footer>
+
+</body>
+</html>
