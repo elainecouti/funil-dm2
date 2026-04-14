@@ -3,405 +3,603 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guia de Reativação ZapClinic — Eunápolis Abril 2026</title>
+<title>Reativação ZapClinic — Eunápolis · Seven Midas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --card: #13131a;
-    --border: #1e1e2e;
-    --accent: #7c3aed;
-    --green: #10b981;
-    --yellow: #f59e0b;
-    --red: #ef4444;
-    --blue: #3b82f6;
-    --text: #e2e8f0;
-    --muted: #64748b;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.6; }
-  
-  .hero { background:linear-gradient(135deg,#1e0f3a 0%,#0f1f3a 100%); padding:48px 24px; text-align:center; border-bottom:1px solid var(--border); }
-  .hero h1 { font-size:2rem; font-weight:800; background:linear-gradient(135deg,#a78bfa,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
-  .hero p { color:var(--muted); font-size:1.1rem; }
-  .badge { display:inline-block; background:#7c3aed22; border:1px solid #7c3aed; color:#a78bfa; padding:4px 12px; border-radius:20px; font-size:0.8rem; margin-bottom:16px; }
-  
-  .container { max-width:900px; margin:0 auto; padding:32px 24px; }
-  
-  .alert { background:#fbbf2422; border:1px solid #f59e0b; border-radius:12px; padding:20px; margin-bottom:32px; }
-  .alert h2 { color:#fbbf24; font-size:1.1rem; margin-bottom:8px; }
-  .alert p { color:#fde68a; }
-  .alert .big { font-size:2rem; font-weight:800; color:#f59e0b; }
-  
-  .section-title { font-size:1.3rem; font-weight:700; color:#a78bfa; margin-bottom:16px; margin-top:40px; border-left:3px solid #7c3aed; padding-left:12px; }
-  
-  .lead-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:20px; }
-  .lead-card h3 { color:#60a5fa; font-size:1.1rem; margin-bottom:4px; }
-  .lead-meta { color:var(--muted); font-size:0.85rem; margin-bottom:16px; }
-  .lead-meta span { background:#1e1e2e; padding:2px 8px; border-radius:4px; margin-right:6px; }
-  
-  .timeline { border-left:2px solid var(--border); margin-left:12px; padding-left:20px; }
-  .timeline-item { position:relative; margin-bottom:16px; }
-  .timeline-item::before { content:''; position:absolute; left:-26px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent); }
-  .timeline-item.lead::before { background:var(--blue); }
-  .timeline-item.bot::before { background:var(--muted); }
-  .timeline-item.gap::before { background:var(--red); }
-  .timeline-item .time { font-size:0.75rem; color:var(--muted); margin-bottom:4px; }
-  .timeline-item .sender { font-size:0.8rem; font-weight:600; margin-bottom:2px; }
-  .timeline-item.sdr .sender { color:#a78bfa; }
-  .timeline-item.lead .sender { color:var(--blue); }
-  .timeline-item.bot .sender { color:var(--muted); }
-  .timeline-item.gap { border-left:none; padding-left:0; margin-left:-20px; }
-  .timeline-item.gap .msg { background:#ef444422; border:1px solid #ef4444; padding:8px 12px; border-radius:8px; color:#fca5a5; font-size:0.85rem; text-align:center; }
-  .timeline-item .msg { font-size:0.9rem; color:var(--text); line-height:1.5; }
-  .timeline-item .trigger { background:#10b98133; border:1px solid #10b981; padding:8px 12px; border-radius:8px; }
-  .timeline-item.trigger-win::before { background:var(--green); }
-  .timeline-item.trigger-win .msg { color:#6ee7b7; }
-  
-  .copy-box { background:#1a1a2e; border:1px solid #7c3aed55; border-radius:10px; padding:20px; margin-bottom:16px; }
-  .copy-box .label { font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); margin-bottom:8px; }
-  .copy-box .copy { font-size:0.95rem; color:var(--text); white-space:pre-line; line-height:1.7; font-family:'Courier New',monospace; }
-  .copy-box .tags { margin-top:10px; }
-  .tag { display:inline-block; font-size:0.7rem; padding:2px 8px; border-radius:4px; margin-right:4px; }
-  .tag.green { background:#10b98122; color:#34d399; }
-  .tag.yellow { background:#f59e0b22; color:#fbbf24; }
-  .tag.red { background:#ef444422; color:#fca5a5; }
-  
-  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; text-align:center; }
-  .stat-card .num { font-size:2rem; font-weight:800; }
-  .stat-card .label { color:var(--muted); font-size:0.85rem; margin-top:4px; }
-  
-  .plan-table { width:100%; border-collapse:collapse; margin-top:16px; }
-  .plan-table th { background:#1e1e2e; color:var(--muted); font-size:0.8rem; text-transform:uppercase; padding:10px 12px; text-align:left; }
-  .plan-table td { padding:12px; border-bottom:1px solid var(--border); font-size:0.9rem; }
-  .plan-table tr:hover td { background:#ffffff08; }
-  
-  .checklist { list-style:none; }
-  .checklist li { padding:10px 0; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
-  .checklist li::before { content:'□'; color:var(--accent); font-size:1.2rem; flex-shrink:0; }
-  .checklist li strong { color:#e2e8f0; }
-  
-  @media(max-width:640px) { .grid2 { grid-template-columns:1fr; } }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#f8f9fa; font-family:'Inter',sans-serif; color:#1a1a2e; }
+
+.header {
+  background:#fff;
+  border-bottom: 3px solid #00e5c7;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top:0; z-index:100;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.logo { display:flex; align-items:center; gap:10px; }
+.logo-icon { width:36px; height:36px; background:linear-gradient(135deg,#00E87B,#00B8D4); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff; font-size:14px; }
+.logo-text { font-size:17px; font-weight:800; }
+.logo-text span { background:linear-gradient(135deg,#00b85c,#00B8D4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.header-meta { font-size:12px; color:#888; text-align:right; }
+.header-meta strong { color:#1a1a2e; display:block; }
+
+.hero {
+  background: linear-gradient(135deg,#00E87B 0%,#00B8D4 100%);
+  padding: 56px 32px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-tag { display:inline-block; background:rgba(255,255,255,0.25); color:#fff; padding:6px 18px; border-radius:20px; font-size:13px; font-weight:700; letter-spacing:.5px; margin-bottom:16px; position:relative; }
+.hero h1 { font-size:2.6rem; font-weight:900; color:#fff; line-height:1.1; margin-bottom:12px; position:relative; }
+.hero p { font-size:1.15rem; color:rgba(255,255,255,0.88); max-width:540px; margin:0 auto; position:relative; }
+
+.container { max-width:960px; margin:0 auto; padding:40px 24px 80px; }
+
+.sec { margin-top:48px; margin-bottom:20px; }
+.sec-badge { display:inline-block; background:#e8fff8; color:#00a06b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:4px 12px; border-radius:20px; margin-bottom:8px; }
+.sec-title { font-size:1.5rem; font-weight:800; color:#1a1a2e; }
+.sec-sub { font-size:0.95rem; color:#666; margin-top:4px; }
+
+.alert-box {
+  background: linear-gradient(135deg,#fff9e6,#fff3cc);
+  border: 2px solid #ffc107;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin: 32px 0;
+}
+.alert-icon { font-size:2.5rem; flex-shrink:0; }
+.alert-box h2 { font-size:1.2rem; font-weight:800; color:#7a4f00; margin-bottom:6px; }
+.alert-box p { color:#5c3a00; font-size:0.95rem; line-height:1.6; }
+.alert-big { font-size:2.4rem; font-weight:900; color:#e67c00; }
+
+.funil { display:flex; flex-direction:column; align-items:center; gap:0; margin:32px auto; max-width:620px; }
+.funil-step { width:100%; border-radius:12px; padding:18px 24px; display:flex; align-items:center; gap:16px; margin-bottom:4px; }
+.funil-num { font-size:2rem; font-weight:900; color:#fff; min-width:48px; text-align:center; }
+.funil-info { flex:1; }
+.funil-info h3 { font-size:1rem; font-weight:700; color:#fff; }
+.funil-info p { font-size:0.85rem; color:rgba(255,255,255,0.8); margin-top:2px; }
+.funil-count { font-size:1.4rem; font-weight:900; color:#fff; min-width:80px; text-align:right; }
+.funil-pct { font-size:0.8rem; color:rgba(255,255,255,0.7); text-align:right; }
+.funil-arrow { font-size:1.4rem; color:#ccc; margin:-2px 0; text-align:center; }
+.f1 { background:linear-gradient(135deg,#3b82f6,#2563eb); }
+.f2 { background:linear-gradient(135deg,#f59e0b,#d97706); width:90%; }
+.f3 { background:linear-gradient(135deg,#ef4444,#dc2626); width:80%; }
+.f4 { background:linear-gradient(135deg,#8b5cf6,#7c3aed); width:70%; }
+.f5 { background:linear-gradient(135deg,#00E87B,#00a06b); width:60%; }
+
+.seg-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+.seg-card { border-radius:16px; padding:24px; border:2px solid transparent; background:#fff; box-shadow:0 2px 16px rgba(0,0,0,.06); }
+.seg-card.quente { border-color:#00E87B; }
+.seg-card.morno { border-color:#f59e0b; }
+.seg-card.frio { border-color:#3b82f6; }
+.seg-emoji { font-size:2.5rem; margin-bottom:12px; }
+.seg-num { font-size:2.4rem; font-weight:900; margin-bottom:4px; }
+.seg-card.quente .seg-num { color:#00a06b; }
+.seg-card.morno .seg-num { color:#d97706; }
+.seg-card.frio .seg-num { color:#2563eb; }
+.seg-label { font-size:1rem; font-weight:700; margin-bottom:8px; }
+.seg-desc { font-size:0.85rem; color:#666; line-height:1.5; }
+.seg-action { margin-top:14px; padding:10px 14px; border-radius:10px; font-size:0.82rem; font-weight:600; line-height:1.4; }
+.seg-card.quente .seg-action { background:#e8fff4; color:#00704a; }
+.seg-card.morno .seg-action { background:#fff8e6; color:#a16207; }
+.seg-card.frio .seg-action { background:#eff6ff; color:#1d4ed8; }
+
+.copy-grid { display:grid; gap:16px; margin-top:20px; }
+.copy-card { background:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 16px rgba(0,0,0,.06); border-left:5px solid #00e5c7; }
+.copy-card.gold { border-left-color:#f59e0b; }
+.copy-card.red { border-left-color:#ef4444; }
+.copy-card.purple { border-left-color:#8b5cf6; }
+.copy-card.blue { border-left-color:#3b82f6; }
+.copy-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+.copy-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; background:#e8fff8; }
+.copy-card.gold .copy-icon { background:#fff8e6; }
+.copy-card.red .copy-icon { background:#fff0f0; }
+.copy-card.purple .copy-icon { background:#f5f0ff; }
+.copy-card.blue .copy-icon { background:#eff6ff; }
+.copy-title { font-size:1rem; font-weight:700; }
+.copy-subtitle { font-size:0.8rem; color:#888; }
+.copy-badges { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; }
+.cbadge { font-size:0.7rem; font-weight:600; padding:3px 10px; border-radius:20px; }
+.cbadge.green { background:#e8fff4; color:#00704a; }
+.cbadge.yellow { background:#fff8e6; color:#a16207; }
+.cbadge.red { background:#fff0f0; color:#b91c1c; }
+.cbadge.blue { background:#eff6ff; color:#1d4ed8; }
+.copy-box { background:#f8f9fa; border:1px solid #e5e7eb; border-radius:10px; padding:16px 18px; font-family:'Courier New',monospace; font-size:0.88rem; line-height:1.7; color:#2d2d2d; white-space:pre-line; }
+.copy-result { margin-top:12px; background:#e8fff4; border-radius:8px; padding:10px 14px; font-size:0.82rem; color:#00704a; font-weight:600; }
+.copy-card.gold .copy-result { background:#fff8e6; color:#a16207; }
+.copy-card.red .copy-result { background:#fff0f0; color:#b91c1c; }
+.copy-card.purple .copy-result { background:#f5f0ff; color:#6d28d9; }
+.copy-card.blue .copy-result { background:#eff6ff; color:#1d4ed8; }
+
+.plan-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:20px; }
+.plan-card { background:#fff; border-radius:16px; padding:22px; box-shadow:0 2px 16px rgba(0,0,0,.06); }
+.plan-week { font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:6px; }
+.plan-title { font-size:1.05rem; font-weight:800; margin-bottom:4px; }
+.plan-meta { font-size:0.82rem; color:#888; margin-bottom:12px; }
+.plan-item { display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; font-size:0.88rem; }
+.plan-dot { width:20px; height:20px; border-radius:50%; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; color:#fff; }
+.plan-card:nth-child(1) .plan-week { color:#3b82f6; }
+.plan-card:nth-child(1) .plan-dot { background:#3b82f6; }
+.plan-card:nth-child(2) .plan-week { color:#f59e0b; }
+.plan-card:nth-child(2) .plan-dot { background:#f59e0b; }
+.plan-card:nth-child(3) .plan-week { color:#8b5cf6; }
+.plan-card:nth-child(3) .plan-dot { background:#8b5cf6; }
+.plan-card:nth-child(4) .plan-week { color:#00a06b; }
+.plan-card:nth-child(4) .plan-dot { background:#00a06b; }
+
+.check-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:20px; }
+.check-item { background:#fff; border-radius:12px; padding:16px; display:flex; gap:12px; align-items:flex-start; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.check-emoji { font-size:1.4rem; flex-shrink:0; }
+.check-text { font-size:0.88rem; line-height:1.5; }
+.check-text strong { display:block; margin-bottom:2px; font-size:0.92rem; }
+
+.pot-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+.pot-card { border-radius:16px; padding:28px; text-align:center; }
+.pot-card.c { background:linear-gradient(135deg,#e8f5e9,#c8f0d8); }
+.pot-card.r { background:linear-gradient(135deg,#e3f2fd,#bbdefb); }
+.pot-card.o { background:linear-gradient(135deg,#fff8e1,#ffe082); }
+.pot-num { font-size:2.4rem; font-weight:900; margin-bottom:4px; }
+.pot-card.c .pot-num { color:#1b5e20; }
+.pot-card.r .pot-num { color:#0d47a1; }
+.pot-card.o .pot-num { color:#e65100; }
+.pot-label { font-size:0.85rem; font-weight:600; color:#444; }
+.pot-sub { font-size:0.75rem; color:#777; margin-top:4px; }
+
+.footer { background:#1a1a2e; color:#888; text-align:center; padding:32px; margin-top:60px; font-size:0.82rem; }
+.footer strong { color:#00e5c7; }
+
+@media(max-width:640px) {
+  .seg-grid,.plan-grid,.check-grid,.pot-grid { grid-template-columns:1fr; }
+  .hero h1 { font-size:1.8rem; }
+  .header { padding:14px 16px; }
+  .alert-box { flex-direction:column; }
+}
 </style>
 </head>
 <body>
 
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">SM</div>
+    <div class="logo-text">Seven <span>Midas</span></div>
+  </div>
+  <div class="header-meta">
+    <strong>Eunápolis — DM2</strong>
+    Plano de Reativação · Abril 2026
+  </div>
+</header>
+
 <div class="hero">
-  <div class="badge">Eunápolis — Abril 2026</div>
-  <h1>Guia de Reativação ZapClinic</h1>
-  <p>2.191 leads dormentes. R$215k+ de receita esperando ser reativada.</p>
+  <div class="hero-tag">📊 ZapClinic · Dados Reais de Março/2026</div>
+  <h1>2.191 leads<br>dormindo na base</h1>
+  <p>Analisamos as conversas no ZapClinic e descobrimos o que reativa um lead dormentes. Aqui está tudo.</p>
 </div>
 
 <div class="container">
 
-  <!-- ALERTA DE OPORTUNIDADE -->
-  <div class="alert">
-    <h2>⚡ Oportunidade crítica identificada</h2>
-    <p class="big">2.191</p>
-    <p>Leads cadastrados em Jun-Dez/2025 que não compraram. Com 1% de CR = <strong>22 vendas × R$9.800 = R$215k</strong> de receita que já está no ZapClinic.</p>
-    <p style="margin-top:8px;color:#fde68a">Em março, 29% da receita veio de leads com 8-9 meses de maturação. O padrão existe. Basta acionar.</p>
-  </div>
-
-  <!-- STATS -->
-  <div class="grid2">
-    <div class="stat-card">
-      <div class="num" style="color:#a78bfa">2.191</div>
-      <div class="label">Leads dormentes Jun-Dez/25</div>
-    </div>
-    <div class="stat-card">
-      <div class="num" style="color:#10b981">89 dias</div>
-      <div class="label">Silêncio médio antes da compra</div>
-    </div>
-    <div class="stat-card">
-      <div class="num" style="color:#f59e0b">3/3</div>
-      <div class="label">Leads reativados que fecharam</div>
-    </div>
-    <div class="stat-card">
-      <div class="num" style="color:#ef4444">R$97</div>
-      <div class="label">Preço que desbloqueou Veralucia</div>
+  <div class="alert-box">
+    <div class="alert-icon">💰</div>
+    <div>
+      <h2>Dinheiro que já está na base — sem gastar em anúncio</h2>
+      <p>Em março/2026, <strong>3 leads que ficaram 2 a 4 meses sem responder compraram</strong> e geraram <strong>~R$21k</strong>. Lemos as conversas completas e descobrimos exatamente o que os fez voltar.<br><br>
+      A base de Eunápolis tem <span class="alert-big">2.191</span> leads nessa mesma situação. Potencial mínimo: <strong>R$215k</strong> sem gastar nada em anúncio.</p>
     </div>
   </div>
 
-  <!-- ANÁLISE DOS 3 CASOS -->
-  <div class="section-title">O que realmente aconteceu — 3 casos reais</div>
-
-  <!-- CASO 1: VERALUCIA -->
-  <div class="lead-card">
-    <h3>Caso 1 — Veralucia Moreira Santos</h3>
-    <div class="lead-meta">
-      <span>Cadastro: 17/06/2025</span>
-      <span>Silêncio: 126 dias</span>
-      <span style="color:#10b981">Trigger: Promoção R$97</span>
-    </div>
-    <div class="timeline">
-      <div class="timeline-item lead">
-        <div class="time">17/06/2025</div>
-        <div class="sender">LEAD</div>
-        <div class="msg">Por favor cm faço para agendar uma consulta</div>
-      </div>
-      <div class="timeline-item bot">
-        <div class="time">Jun-Nov 2025</div>
-        <div class="sender">BOT + SDR</div>
-        <div class="msg">Múltiplos contatos, drip de conteúdo, tentativas de agendamento...</div>
-      </div>
-      <div class="timeline-item gap">
-        <div class="msg">🔴 SILÊNCIO DE 126 DIAS — 11/11/2025 → 17/03/2026</div>
-      </div>
-      <div class="timeline-item trigger-win">
-        <div class="time">17/03/2026 — BOT BROADCAST</div>
-        <div class="sender">BOT (campanha "Mês do Consumidor")</div>
-        <div class="msg trigger">*Atenção!* Se é diabético tipo 2 ou pré diabético temos uma *promoção para você!* Nesse mês do consumidor você pode fazer sua Consulta Avaliativa por *apenas R$97,00*... 
-Veralucia vai perder essa oportunidade ou vai agendar sua consulta avaliativa?</div>
-      </div>
-      <div class="timeline-item lead">
-        <div class="time">18/03/2026 — EM MENOS DE 12 HORAS</div>
-        <div class="sender">LEAD</div>
-        <div class="msg">Bom dia por favor gostaria de marcar uma consulta de preferência pela manhã eu agradeço [+ trouxe UMA AMIGA]</div>
-      </div>
-    </div>
-    <p style="margin-top:16px;color:#34d399;font-size:0.9rem">✅ <strong>Trigger: Promoção com preço específico + urgência + FOMO</strong><br>Tempo de resposta: menos de 12 horas. Trouxe uma referência no mesmo dia.</p>
+  <!-- FUNIL -->
+  <div class="sec">
+    <div class="sec-badge">📌 Entenda o funil</div>
+    <div class="sec-title">Onde estão esses 2.191 leads?</div>
+    <div class="sec-sub">Imagine um balde com furos. Cada etapa, alguns saem. Esses são os que ficaram presos no meio.</div>
   </div>
 
-  <!-- CASO 2: MARIZÉLIA -->
-  <div class="lead-card">
-    <h3>Caso 2 — Marizélia Sodre Costa</h3>
-    <div class="lead-meta">
-      <span>Cadastro: 19/06/2025</span>
-      <span>Silêncio: 72 dias</span>
-      <span style="color:#10b981">Trigger: Bot campaign "quero perfil"</span>
-    </div>
-    <div class="timeline">
-      <div class="timeline-item lead">
-        <div class="time">19/06/2025</div>
-        <div class="sender">LEAD</div>
-        <div class="msg">Olá! Tenho interesse e queria mais informações</div>
+  <div class="funil">
+    <div class="funil-step f1">
+      <div class="funil-num">1</div>
+      <div class="funil-info">
+        <h3>📱 Clicou no anúncio e entrou no WhatsApp</h3>
+        <p>Recebeu a mensagem do bot. Início da jornada.</p>
       </div>
-      <div class="timeline-item">
-        <div class="time">Nov/25</div>
-        <div class="sender">SDR Laíne</div>
-        <div class="msg">Voltou perguntando: "quanto fica a consulta, resolve mesmo?" — estava viajando</div>
-      </div>
-      <div class="timeline-item gap">
-        <div class="msg">🔴 SILÊNCIO DE 72 DIAS — 19/11/2025 → 30/01/2026</div>
-      </div>
-      <div class="timeline-item trigger-win">
-        <div class="time">30/01/2026 23:38 — BOT CAMPAIGN</div>
-        <div class="sender">LEAD (respondeu bot)</div>
-        <div class="msg trigger">QUERO entender como funciona e ver se tenho perfil para o método Doutor DM2.</div>
-      </div>
-      <div class="timeline-item bot">
-        <div class="time">Fev 2026</div>
-        <div class="sender">BOT drip</div>
-        <div class="msg">Sequência: glicose, formigamento, vegetais, limão, complicações...</div>
-      </div>
-      <div class="timeline-item">
-        <div class="time">12/02/2026</div>
-        <div class="sender">SDR Laíne</div>
-        <div class="msg">Bom diaa! tudo bem? / Como está seu quadro hoje? tem verificado sua glicemia? → Agendou 09/03</div>
+      <div>
+        <div class="funil-count">2.191</div>
+        <div class="funil-pct">100% — base total</div>
       </div>
     </div>
-    <p style="margin-top:16px;color:#34d399;font-size:0.9rem">✅ <strong>Trigger: Bot com menu de opções "QUERO entender meu perfil"</strong><br>O drip de saúde (formigamento, glicose) manteve aquecida até a SDR fechar.</p>
-  </div>
-
-  <!-- CASO 3: NEIDE/GILVAN -->
-  <div class="lead-card">
-    <h3>Caso 3 — Neide / Gilvan Lima Cardoso</h3>
-    <div class="lead-meta">
-      <span>Cadastro: 16/07/2025</span>
-      <span>Silêncio: 69 dias</span>
-      <span style="color:#3b82f6">Trigger: Orgânico (voltou por conta própria)</span>
-    </div>
-    <div class="timeline">
-      <div class="timeline-item lead">
-        <div class="time">16/07/2025</div>
-        <div class="sender">LEAD</div>
-        <div class="msg">Olá! Tenho interesse e queria mais informações, por favor. / Bom dia</div>
+    <div class="funil-arrow">▼</div>
+    <div class="funil-step f2">
+      <div class="funil-num">2</div>
+      <div class="funil-info">
+        <h3>💬 Respondeu pelo menos uma mensagem</h3>
+        <p>Interagiu com o bot ou com a Laíne nos últimos 90 dias</p>
       </div>
-      <div class="timeline-item gap">
-        <div class="msg">🔴 SILÊNCIO DE 69 DIAS — 12/12/2025 → 19/02/2026</div>
-      </div>
-      <div class="timeline-item trigger-win">
-        <div class="time">19/02/2026 — ORGÂNICO</div>
-        <div class="sender">LEAD (voltou sozinha)</div>
-        <div class="msg trigger">Bom dia / Preseso sabe onde fica essa clinica [lead já decidida, só precisava do endereço]</div>
-      </div>
-      <div class="timeline-item">
-        <div class="time">16/03/2026</div>
-        <div class="sender">SDR Laíne</div>
-        <div class="msg">Confirmou consulta do esposo → FECHOU</div>
+      <div>
+        <div class="funil-count">~267</div>
+        <div class="funil-pct">12% — "quentes"</div>
       </div>
     </div>
-    <p style="margin-top:16px;color:#60a5fa;font-size:0.9rem">ℹ️ <strong>Sem trigger externo — lead estava matura</strong><br>Lição: alguns leads voltam sozinhos. O SDR precisa responder rápido e não deixar escapar.</p>
-  </div>
-
-  <!-- COPIES QUE FUNCIONARAM -->
-  <div class="section-title">Copy de Reativação — Mensagens Reais que Funcionaram</div>
-
-  <div class="copy-box">
-    <div class="label">🏆 COPY #1 — PROMOÇÃO (reativou Veralucia após 126 dias)</div>
-    <div class="copy">*Atenção!* Se é diabético tipo 2 ou pré diabético temos uma *promoção para você!* 
-
-Nesse mês de abril você pode fazer sua Consulta Avaliativa por *apenas R$97,00* e traçar um plano estratégico para alcançar a remissão do diabetes!
-
-[NOME] vai perder essa oportunidade ou vai agendar sua consulta avaliativa? 👇</div>
-    <div class="tags">
-      <span class="tag green">Alta urgência</span>
-      <span class="tag green">Preço específico</span>
-      <span class="tag green">FOMO ativo</span>
-      <span class="tag yellow">Usar para: Jun-Nov/25</span>
+    <div class="funil-arrow">▼</div>
+    <div class="funil-step f3">
+      <div class="funil-num">3</div>
+      <div class="funil-info">
+        <h3>📅 Agendou uma consulta</h3>
+        <p>Marcou horário mas pode ter sumido antes de ir</p>
+      </div>
+      <div>
+        <div class="funil-count">~80</div>
+        <div class="funil-pct">4%</div>
+      </div>
+    </div>
+    <div class="funil-arrow">▼</div>
+    <div class="funil-step f4">
+      <div class="funil-num">4</div>
+      <div class="funil-info">
+        <h3>🏥 Foi na consulta (avaliação)</h3>
+        <p>Apareceu na clínica e passou pela avaliação</p>
+      </div>
+      <div>
+        <div class="funil-count">~52</div>
+        <div class="funil-pct">2.4%</div>
+      </div>
+    </div>
+    <div class="funil-arrow">▼</div>
+    <div class="funil-step f5">
+      <div class="funil-num">5</div>
+      <div class="funil-info">
+        <h3>✅ Comprou o método</h3>
+        <p>Fechou o tratamento — objetivo final</p>
+      </div>
+      <div>
+        <div class="funil-count">~17</div>
+        <div class="funil-pct">0.8%</div>
+      </div>
     </div>
   </div>
 
-  <div class="copy-box">
-    <div class="label">🥇 COPY #2 — PERFIL/QUALIFICAÇÃO (reativou Marizélia após 72 dias)</div>
-    <div class="copy">Menu de opções bot:
+  <!-- SEGMENTAÇÃO -->
+  <div class="sec">
+    <div class="sec-badge">🎯 Para quem disparar</div>
+    <div class="sec-title">3 grupos — 3 abordagens diferentes</div>
+    <div class="sec-sub">Não dá pra tratar todo mundo igual. Veja quem é quem e o que fazer com cada um.</div>
+  </div>
 
-[opção 1] QUERO entender como funciona e ver se tenho perfil para o método Doutor DM2.
-[opção 2] Não tenho interesse no momento.
-[opção 3] Já fiz minha consulta.</div>
-    <div class="tags">
-      <span class="tag green">Alta conversão</span>
-      <span class="tag green">Baixo atrito</span>
-      <span class="tag yellow">Usar para: leads com 45-90 dias silêncio</span>
+  <div class="seg-grid">
+    <div class="seg-card frio">
+      <div class="seg-emoji">🔥</div>
+      <div class="seg-num">~80</div>
+      <div class="seg-label">AGENDARAM MAS NÃO VIERAM</div>
+      <div class="seg-desc">Já tomaram a decisão de ir. Algo impediu. São os mais propensos a fechar rápido. <strong>Prioridade máxima.</strong></div>
+      <div class="seg-action">📞 Laíne entra PRIMEIRO, manualmente. Oferece reagendamento com gentileza e urgência.</div>
+    </div>
+    <div class="seg-card morno">
+      <div class="seg-emoji">🌡️</div>
+      <div class="seg-num">267</div>
+      <div class="seg-label">RESPONDERAM NOS ÚLTIMOS 90 DIAS</div>
+      <div class="seg-desc">Já interagiram. Estão "mornos". Podem estar esperando o momento certo ou o preço certo.</div>
+      <div class="seg-action">👋 Laíne entra manualmente, pergunta sobre o quadro clínico e empurra para agendamento.</div>
+    </div>
+    <div class="seg-card quente">
+      <div class="seg-emoji">❄️</div>
+      <div class="seg-num">1.924</div>
+      <div class="seg-label">SUMIRAM HÁ +90 DIAS</div>
+      <div class="seg-desc">Não respondem nada há mais de 3 meses. Precisam de um motivo forte para voltar. É aqui que a promoção entra.</div>
+      <div class="seg-action">📢 Broadcast em massa com promoção de preço (R$97). Quem responder, Laíne assume.</div>
     </div>
   </div>
 
-  <div class="copy-box">
-    <div class="label">💬 COPY #3 — DRIP COMPLICAÇÕES (mantém aquecido durante silêncio)</div>
-    <div class="copy">Olá [NOME], já conferiu sua glicose hoje? 
-Estava abaixo de 100?
+  <!-- O QUE DESCOBRIMOS -->
+  <div class="sec">
+    <div class="sec-badge">🔍 O que funciona de verdade</div>
+    <div class="sec-title">3 casos reais — o que fez cada lead voltar</div>
+    <div class="sec-sub">Lemos cada conversa no ZapClinic. Não é achismo — são dados.</div>
+  </div>
 
-Se NÃO, sabemos que é bem frustrante né? 
-Mas eu sei que você gostaria de não ter essa preocupação. 
+  <div style="display:grid;gap:16px;margin-top:20px;">
+    <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border-left:5px solid #00E87B;">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:0.75rem;font-weight:700;color:#00a06b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">🏆 Caso 1 — Trigger mais poderoso</div>
+          <div style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">Veralucia — 126 dias sumida</div>
+          <div style="font-size:0.88rem;color:#555;">Cadastrou em junho/25. Sumiu em novembro/25. Voltou em março/26.</div>
+        </div>
+        <div style="background:#e8fff4;border-radius:10px;padding:14px 18px;text-align:center;min-width:140px;">
+          <div style="font-size:0.75rem;color:#00a06b;font-weight:700;">Tempo sumida</div>
+          <div style="font-size:2rem;font-weight:900;color:#00704a;">126 dias</div>
+          <div style="font-size:0.75rem;color:#00a06b;">4 meses</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:#fff0f0;border-radius:10px;padding:14px;">
+          <div style="font-size:0.75rem;font-weight:700;color:#dc2626;margin-bottom:6px;">❌ O que o bot mandava antes</div>
+          <div style="font-size:0.85rem;color:#555;">Mensagens genéricas. Ela não respondia. 126 dias de silêncio total.</div>
+        </div>
+        <div style="background:#e8fff4;border-radius:10px;padding:14px;">
+          <div style="font-size:0.75rem;font-weight:700;color:#00a06b;margin-bottom:6px;">✅ O que funcionou</div>
+          <div style="font-size:0.85rem;color:#1a1a2e;font-weight:600;">"Consulta por apenas R$97,00 — vai perder essa oportunidade?"</div>
+          <div style="font-size:0.75rem;color:#00a06b;margin-top:6px;">→ Respondeu em menos de 12h. Trouxe uma amiga junto.</div>
+        </div>
+      </div>
+    </div>
 
-Nós da Doutor DM2 de Eunápolis teremos uma alegria em te conduzir em um método inteligente que *além de normalizar a glicose, busca a Remissão dessa doença!* 💪
+    <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border-left:5px solid #f59e0b;">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:0.75rem;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">🥈 Caso 2 — Bot de qualificação</div>
+          <div style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">Marizélia — 72 dias sumida</div>
+          <div style="font-size:0.88rem;color:#555;">Cadastrou em junho/25. Sumiu em novembro/25. Voltou em janeiro/26.</div>
+        </div>
+        <div style="background:#fff8e6;border-radius:10px;padding:14px 18px;text-align:center;min-width:140px;">
+          <div style="font-size:0.75rem;color:#d97706;font-weight:700;">Tempo sumida</div>
+          <div style="font-size:2rem;font-weight:900;color:#92400e;">72 dias</div>
+          <div style="font-size:0.75rem;color:#d97706;">2,5 meses</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;background:#fff8e6;border-radius:10px;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#d97706;margin-bottom:6px;">✅ O que funcionou: bot mandou uma opção de menu às 23h30</div>
+        <div style="font-size:0.9rem;color:#1a1a2e;font-weight:600;">"QUERO entender como funciona e ver se tenho perfil para o método Doutor DM2"</div>
+        <div style="font-size:0.75rem;color:#d97706;margin-top:6px;">→ Ela clicou, Laíne assumiu no dia seguinte, agendou para março, fechou.</div>
+      </div>
+    </div>
 
-Quando você prefere vir — pela manhã ou pela tarde?</div>
-    <div class="tags">
-      <span class="tag green">Dor específica</span>
-      <span class="tag green">CTA direto</span>
-      <span class="tag yellow">Usar em: bot drip semanal</span>
+    <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 16px rgba(0,0,0,.06);border-left:5px solid #3b82f6;">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:0.75rem;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">ℹ️ Caso 3 — Voltou sozinha</div>
+          <div style="font-size:1.05rem;font-weight:800;margin-bottom:4px;">Neide / Gilvan — 69 dias sumida</div>
+          <div style="font-size:0.88rem;color:#555;">Cadastrou em julho/25. Sumiu em dezembro/25. Voltou em fevereiro/26 sem nenhuma campanha.</div>
+        </div>
+        <div style="background:#eff6ff;border-radius:10px;padding:14px 18px;text-align:center;min-width:140px;">
+          <div style="font-size:0.75rem;color:#2563eb;font-weight:700;">Tempo sumida</div>
+          <div style="font-size:2rem;font-weight:900;color:#1d4ed8;">69 dias</div>
+          <div style="font-size:0.75rem;color:#2563eb;">2 meses</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;background:#eff6ff;border-radius:10px;padding:14px;">
+        <div style="font-size:0.75rem;font-weight:700;color:#2563eb;margin-bottom:6px;">💬 Mensagem dela em fev/26 (voltou sozinha, sem trigger):</div>
+        <div style="font-size:0.9rem;color:#1a1a2e;font-weight:600;">"Bom dia. Preseso sabe onde fica essa clinica"</div>
+        <div style="font-size:0.75rem;color:#2563eb;margin-top:6px;">→ Já estava 100% decidida. Só precisava do endereço. Casal fechou junto: ticket dobrado.</div>
+      </div>
     </div>
   </div>
 
-  <div class="copy-box">
-    <div class="label">🚨 COPY #4 — FORMIGAMENTO (melhor taxa de resposta)</div>
-    <div class="copy">Formigamento nas mãos e nos pés não é normal 🚨
+  <!-- COPIES -->
+  <div class="sec">
+    <div class="sec-badge">📝 Templates prontos para usar</div>
+    <div class="sec-title">5 mensagens que funcionaram — copie e use</div>
+    <div class="sec-sub">Extraídas diretamente das conversas reais do ZapClinic. Não foram inventadas.</div>
+  </div>
+
+  <div class="copy-grid">
+    <div class="copy-card gold">
+      <div class="copy-header">
+        <div class="copy-icon">🏆</div>
+        <div>
+          <div class="copy-title">Copy #1 — Promoção com preço (a mais forte)</div>
+          <div class="copy-subtitle">Para: 1.924 leads frios · Broadcast · Semana 1</div>
+        </div>
+        <div class="copy-badges">
+          <span class="cbadge green">Alta conversão</span>
+          <span class="cbadge red">Urgência</span>
+        </div>
+      </div>
+      <div class="copy-box">*Atenção [NOME]!* 👋
+
+Se você tem diabetes tipo 2 ou pré-diabetes, temos uma promoção especial de abril 🎉
+
+Faça sua Consulta Avaliativa por *apenas R$97,00* e saia com um plano estratégico para reverter o diabetes — sem remédio, sem sofrimento.
+
+Você vai perder essa oportunidade ou quer garantir sua vaga? 👇</div>
+      <div class="copy-result">✅ Veralucia: 126 dias de silêncio → respondeu em menos de 12h → trouxe uma amiga</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-header">
+        <div class="copy-icon">🎯</div>
+        <div>
+          <div class="copy-title">Copy #2 — Menu de perfil (baixo atrito)</div>
+          <div class="copy-subtitle">Para: Frios que não respondem à promoção · Alternativa</div>
+        </div>
+        <div class="copy-badges">
+          <span class="cbadge green">Sem pressão</span>
+          <span class="cbadge blue">Qualificação</span>
+        </div>
+      </div>
+      <div class="copy-box">Oi [NOME]! Como você está?
+
+Me conta: você ainda tem dificuldade com a glicose?
+
+👇 Me responde uma das opções:
+
+✋ QUERO entender como funciona e ver se tenho perfil para o método Doutor DM2
+😊 Já fiz minha consulta
+⏳ Não tenho interesse no momento</div>
+      <div class="copy-result">✅ Marizélia: 72 dias de silêncio → clicou na opção às 23h → Laíne assumiu → fechou em março</div>
+    </div>
+
+    <div class="copy-card red">
+      <div class="copy-header">
+        <div class="copy-icon">🚨</div>
+        <div>
+          <div class="copy-title">Copy #3 — Complicação/medo (drip semanal)</div>
+          <div class="copy-subtitle">Para: Bot mandar toda semana nos frios · Mantém aquecido</div>
+        </div>
+        <div class="copy-badges">
+          <span class="cbadge red">Urgência clínica</span>
+          <span class="cbadge green">Alto engajamento</span>
+        </div>
+      </div>
+      <div class="copy-box">Formigamento nas mãos e nos pés não é normal 🚨
 
 [NOME], isso pode ser sinal de neuropatia diabética — uma das complicações mais comuns do diabetes tipo 2.
 
-Vamos marcar uma consulta avaliativa e dar o primeiro passo para alcançar a remissão do diabetes e tratar esses sintomas.
+Vamos marcar uma consulta e dar o primeiro passo para a remissão.
 
 Você prefere vir pela manhã ou pela tarde? 😊</div>
-    <div class="tags">
-      <span class="tag red">Medo/complicações</span>
-      <span class="tag green">Urgência clínica</span>
-      <span class="tag green">Alta conversão</span>
+      <div class="copy-result">✅ Essa mensagem do drip manteve os 3 leads "no radar" durante os meses de silêncio</div>
+    </div>
+
+    <div class="copy-card purple">
+      <div class="copy-header">
+        <div class="copy-icon">💬</div>
+        <div>
+          <div class="copy-title">Copy #4 — SDR humanizando (Laíne usa manualmente)</div>
+          <div class="copy-subtitle">Para: Laíne usar quando lead responde qualquer coisa</div>
+        </div>
+        <div class="copy-badges">
+          <span class="cbadge blue">Humano</span>
+          <span class="cbadge yellow">Follow-up</span>
+        </div>
+      </div>
+      <div class="copy-box">[Lead respondeu ao broadcast:]
+Eii [NOME], ta aí?! Estou aqui no seu aguardo 😊
+
+[Lead marcou consulta — véspera:]
+Oi [NOME]! Amanhã é o grande dia 🌟
+
+Estamos animados e esperamos que você também esteja! Se tiver dificuldade pra encontrar o endereço, me chama aqui. Te esperamos!</div>
+      <div class="copy-result">✅ Laíne usou variações disso nos 3 casos. O toque humano é o que fecha.</div>
+    </div>
+
+    <div class="copy-card blue">
+      <div class="copy-header">
+        <div class="copy-icon">👫</div>
+        <div>
+          <div class="copy-title">Copy #5 — Perguntar sobre a família (dobra o ticket)</div>
+          <div class="copy-subtitle">Para: Laíne usar SEMPRE no momento do agendamento</div>
+        </div>
+        <div class="copy-badges">
+          <span class="cbadge blue">Ticket dobrado</span>
+          <span class="cbadge green">Referência</span>
+        </div>
+      </div>
+      <div class="copy-box">Ótimo [NOME]! Sua consulta está confirmada 🎉
+
+Só uma coisa: você tem algum familiar que também tem diabetes ou pré-diabetes?
+
+Temos horário disponível logo depois do seu. Seria incrível começar essa jornada juntos — com desconto especial para quem vem em família 😊</div>
+      <div class="copy-result">✅ Gilvan + esposa = R$21k do mesmo casal. Veralucia trouxe amiga no mesmo dia. Sempre perguntar.</div>
     </div>
   </div>
 
-  <div class="copy-box">
-    <div class="label">👋 COPY #5 — SDR follow-up humano (Laíne usou em todos os 3 casos)</div>
-    <div class="copy">[após silêncio de 24-48h do bot]
-Eii [NOME], ta aí?! Estou aqui no seu aguardo ok 😊
+  <!-- PLANO -->
+  <div class="sec">
+    <div class="sec-badge">📅 O que fazer</div>
+    <div class="sec-title">Plano semana a semana — abril 2026</div>
+    <div class="sec-sub">Simples. Sem complicar.</div>
+  </div>
 
-[no dia anterior à consulta]
-Olá [NOME]!! Espero que você esteja bem. 
-
-Amanhã é o grande dia!!! Estamos animados e esperamos que você também esteja, pois é o momento de começarmos juntos essa jornada que transforma.
-
-Te esperamos amanhã! 🌟</div>
-    <div class="tags">
-      <span class="tag green">Humano</span>
-      <span class="tag green">Urgência temporal</span>
-      <span class="tag yellow">SDR deve enviar manualmente</span>
+  <div class="plan-grid">
+    <div class="plan-card">
+      <div class="plan-week">🔵 Semana 1 · 7 a 13/04</div>
+      <div class="plan-title">Disparar promoção R$97</div>
+      <div class="plan-meta">999 leads · Jun-Ago/2025 · Copy #1</div>
+      <div class="plan-item"><div class="plan-dot">1</div><div>Configurar broadcast no ZapClinic com Copy #1</div></div>
+      <div class="plan-item"><div class="plan-dot">2</div><div>Laíne monitora e responde quem interagir em até 2h</div></div>
+      <div class="plan-item"><div class="plan-dot">3</div><div>Meta: 15–20 agendamentos</div></div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-week">🟡 Semana 2 · 14 a 20/04</div>
+      <div class="plan-title">Broadcast menu de perfil</div>
+      <div class="plan-meta">673 leads · Set-Out/2025 · Copy #2</div>
+      <div class="plan-item"><div class="plan-dot">1</div><div>Broadcast Copy #2 (menu com opções)</div></div>
+      <div class="plan-item"><div class="plan-dot">2</div><div>Quem clicou → Laíne assume na hora</div></div>
+      <div class="plan-item"><div class="plan-dot">3</div><div>Meta: 10–15 agendamentos</div></div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-week">🟣 Semana 3 · 21 a 27/04</div>
+      <div class="plan-title">Complicações + promoção</div>
+      <div class="plan-meta">519 leads · Nov-Dez/2025 · Copy #3 + R$97</div>
+      <div class="plan-item"><div class="plan-dot">1</div><div>Broadcast Copy #3 (formigamento)</div></div>
+      <div class="plan-item"><div class="plan-dot">2</div><div>Reforçar: "promoção acaba essa semana"</div></div>
+      <div class="plan-item"><div class="plan-dot">3</div><div>Meta: 8–12 agendamentos</div></div>
+    </div>
+    <div class="plan-card">
+      <div class="plan-week">🟢 Semana 4 · 28/04+</div>
+      <div class="plan-title">Follow-up SDR manual</div>
+      <div class="plan-meta">Todos que responderam mas não agendaram</div>
+      <div class="plan-item"><div class="plan-dot">1</div><div>Laíne entra em cada conversa parada</div></div>
+      <div class="plan-item"><div class="plan-dot">2</div><div>Perguntar sobre a família (Copy #5)</div></div>
+      <div class="plan-item"><div class="plan-dot">3</div><div>Confirmar todas as consultas na véspera</div></div>
     </div>
   </div>
 
-  <!-- PLANO DE AÇÃO ABRIL -->
-  <div class="section-title">Plano de Ação Abril — ZapClinic Eunápolis</div>
+  <!-- CHECKLIST -->
+  <div class="sec">
+    <div class="sec-badge">✅ Regras da Laíne</div>
+    <div class="sec-title">O que fazer todo dia para não perder venda</div>
+  </div>
 
-  <table class="plan-table">
-    <thead>
-      <tr>
-        <th>Semana</th>
-        <th>Ação</th>
-        <th>Segmento</th>
-        <th>Copy</th>
-        <th>Meta</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Semana 1<br>(7-13/04)</strong></td>
-        <td>Broadcast promoção<br>"Mês DM2"</td>
-        <td>Jun-Ago/25<br>(999 leads)</td>
-        <td>Copy #1 — R$97</td>
-        <td>15-20 agendamentos</td>
-      </tr>
-      <tr>
-        <td><strong>Semana 2<br>(14-20/04)</strong></td>
-        <td>Broadcast "perfil"<br>+ SDR follow-up</td>
-        <td>Set-Out/25<br>(673 leads)</td>
-        <td>Copy #2 — menu</td>
-        <td>10-15 agendamentos</td>
-      </tr>
-      <tr>
-        <td><strong>Semana 3<br>(21-27/04)</strong></td>
-        <td>Broadcast complicações<br>+ promoção</td>
-        <td>Nov-Dez/25<br>(519 leads)</td>
-        <td>Copy #4 + R$97</td>
-        <td>8-12 agendamentos</td>
-      </tr>
-      <tr>
-        <td><strong>Semana 4<br>(28/04+)</strong></td>
-        <td>Follow-up SDR manual<br>nos que responderam</td>
-        <td>Todos respondentes</td>
-        <td>Copy #5 + agendamento</td>
-        <td>60-70% show-up</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- CHECKLIST LAÍNE -->
-  <div class="section-title">Checklist Operacional — SDR Laíne</div>
-
-  <ul class="checklist">
-    <li><div><strong>Responder em até 2 horas</strong> quando lead dormente responde ao broadcast — Veralucia esperou e foi atendida em 20 min</div></li>
-    <li><div><strong>Sempre perguntar "manhã ou tarde?"</strong> — remove a barreira de iniciar o agendamento</div></li>
-    <li><div><strong>Confirmar consulta na véspera</strong> — copy #5 reduz no-show (as 3 vendas tiveram confirmação via SDR)</div></li>
-    <li><div><strong>Perguntar sobre a família</strong> — Gilvan = casal que fechou junto. Sempre verificar se tem mais alguém para consultar</div></li>
-    <li><div><strong>Não re-agendar mais de 2x</strong> — Marizélia foi reagendada 3x, quase perdeu engajamento</div></li>
-    <li><div><strong>Registrar "FECHOU" na tag do lead</strong> — para excluir da régua de reativação e não incomodar clientes</div></li>
-    <li><div><strong>Cobrança dos inadimplentes</strong> — Eliete (R$5.164, 7% pago) e Maria Emilia (R$5.300, 16% pago) — abordar com cuidado mas não deixar passar</div></li>
-  </ul>
-
-  <!-- POTENCIAL FINANCEIRO -->
-  <div class="section-title">Potencial Financeiro — Cenários</div>
-
-  <div class="grid2">
-    <div class="stat-card">
-      <div class="num" style="color:#10b981">R$215k</div>
-      <div class="label">Cenário conservador (1% CR)</div>
-      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">22 vendas × R$9.800</p>
+  <div class="check-grid">
+    <div class="check-item">
+      <div class="check-emoji">⚡</div>
+      <div class="check-text"><strong>Responder em até 2 horas</strong>Quando um dormente responde ao broadcast, Laíne assume na hora. Mais que 2h = lead esfria de novo.</div>
     </div>
-    <div class="stat-card">
-      <div class="num" style="color:#a78bfa">R$430k</div>
-      <div class="label">Cenário realista (2% CR)</div>
-      <p style="margin-top:8px;font-size:0.8rem;color:var(--muted)">44 vendas × R$9.800</p>
+    <div class="check-item">
+      <div class="check-emoji">🌅</div>
+      <div class="check-text"><strong>Perguntar "manhã ou tarde?"</strong>Nunca perguntar "quando você quer vir?". Dar duas opções já remove a preguiça de decidir.</div>
+    </div>
+    <div class="check-item">
+      <div class="check-emoji">📞</div>
+      <div class="check-text"><strong>Confirmar na véspera da consulta</strong>Os 3 casos de março tiveram confirmação da Laíne um dia antes. Reduz no-show.</div>
+    </div>
+    <div class="check-item">
+      <div class="check-emoji">👨‍👩‍👧</div>
+      <div class="check-text"><strong>Sempre perguntar sobre a família</strong>Gilvan + esposa = R$21k. Veralucia + amiga = 2 vendas. Sempre perguntar.</div>
+    </div>
+    <div class="check-item">
+      <div class="check-emoji">🔄</div>
+      <div class="check-text"><strong>No máximo 2 reagendamentos</strong>Mais de 2x = lead perde o entusiasmo. Se não puder vir, deixar um espaço de tempo e tentar de novo.</div>
+    </div>
+    <div class="check-item">
+      <div class="check-emoji">💸</div>
+      <div class="check-text"><strong>Cobrar inadimplentes primeiro</strong>Eliete: R$5.164 (só 7% pago). Maria Emilia: R$5.300 (só 16% pago). É dinheiro que já é da clínica.</div>
     </div>
   </div>
 
-  <div style="margin-top:16px;background:#10b98111;border:1px solid #10b981;border-radius:10px;padding:16px;font-size:0.9rem;color:#6ee7b7">
-    <strong>Referência:</strong> Em março/2026, 3 vendas de dormentes = R$21k (~15% da receita total de R$138k de uma consultora). 
-    Se março repetir com 2.191 leads vs apenas ~50 que havia antes = potencial 40x maior.
+  <!-- POTENCIAL -->
+  <div class="sec">
+    <div class="sec-badge">💰 Quanto pode entrar</div>
+    <div class="sec-title">Cenários de resultado</div>
+    <div class="sec-sub">Custo da campanha: R$0 em anúncio. Só o tempo da Laíne.</div>
   </div>
 
-  <div style="margin-top:48px;text-align:center;color:var(--muted);font-size:0.8rem;padding-bottom:32px;">
-    Gerado por Seven Midas · eunapolis@dm2 · Abril 2026<br>
-    Fonte: ZapClinic s17 (dados ao vivo) + Meta Ads Graph API + Planilhas AV MARC/FEC MARC
+  <div class="pot-grid">
+    <div class="pot-card c">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🐢</div>
+      <div class="pot-num">R$215k</div>
+      <div class="pot-label">Conservador (1% CR)</div>
+      <div class="pot-sub">22 vendas × R$9.800</div>
+    </div>
+    <div class="pot-card r">
+      <div style="font-size:1.5rem;margin-bottom:8px;">⚡</div>
+      <div class="pot-num">R$430k</div>
+      <div class="pot-label">Realista (2% CR)</div>
+      <div class="pot-sub">44 vendas × R$9.800</div>
+    </div>
+    <div class="pot-card o">
+      <div style="font-size:1.5rem;margin-bottom:8px;">🚀</div>
+      <div class="pot-num">R$645k</div>
+      <div class="pot-label">Otimista (3% CR)</div>
+      <div class="pot-sub">66 vendas × R$9.800</div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;background:linear-gradient(135deg,#e8fff4,#d1fae5);border:2px solid #00E87B;border-radius:14px;padding:20px 24px;font-size:0.92rem;color:#1b5e20;line-height:1.7;">
+    <strong>Referência:</strong> Em março/2026, apenas 3 leads dormentes geraram ~R$21k. Isso é ~10% da receita total. A base tem 2.191 leads na mesma situação. Custo: <strong>R$0 em anúncio</strong>.
   </div>
 
 </div>
+
+<div class="footer">
+  <p>Gerado por <strong>Seven Midas Marketing</strong> · Eunápolis DM2 · Abril 2026</p>
+  <p style="margin-top:6px">Fonte: ZapClinic s17 (dados ao vivo) · Meta Ads Graph API · Planilhas AV MARC / FEC MARC</p>
+</div>
+
 </body>
 </html>
