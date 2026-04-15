@@ -307,18 +307,22 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
 
     ag_novos = ag_antigos = 0
     for d in agendados:
-        wpp = _norm_wpp(d.get("whatsapp", ""))
+        wpp    = _norm_wpp(d.get("whatsapp", ""))
+        ag_dt  = _parse_data(d.get("data", ""))          # data do diálogo AGENDOU
         cad_dt = next(
             (leads_por_phone[wpp[-n:]] for n in (8, 9, 10, 11)
              if len(wpp) >= n and wpp[-n:] in leads_por_phone),
             None
         )
-        if cad_dt and cad_dt.month == mes_atual and cad_dt.year == ano_atual:
-            ag_novos += 1
-            d["tipo_lead"] = "novo"
-        else:
-            ag_antigos += 1
-            d["tipo_lead"] = "antigo"
+        # Só classifica se o AGENDOU foi no mês atual (abril)
+        if ag_dt and ag_dt.month == mes_atual and ag_dt.year == ano_atual:
+            if cad_dt and cad_dt.month == mes_atual and cad_dt.year == ano_atual:
+                ag_novos += 1
+                d["tipo_lead"] = "novo"
+            else:
+                ag_antigos += 1
+                d["tipo_lead"] = "antigo"
+        # AGENDOU em mês anterior → sem badge de novo/antigo (março agendando março)
 
     tx_novos   = round(ag_novos  / total_leads_novos  * 100, 1) if total_leads_novos  else 0
     tx_antigos = round(ag_antigos / total_leads_antigos * 100, 1) if total_leads_antigos else 0
