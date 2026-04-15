@@ -133,6 +133,8 @@ def fetch_dialogs(session, server, date_from, date_to):
 
 RE_AGENDOU   = re.compile(r"\bagendou\b", re.I)
 RE_REAGENDOU = re.compile(r"\breagendou\b", re.I)
+RE_DATE_DMY  = re.compile(r"(\d{1,2}/\d{1,2}/\d{4})")
+RE_AGEND_MSG = re.compile(r"agendado[s]?\s+para|agendamos\s+sua|consulta\s+marcada|remarcado\s+para|reagendado\s+para", re.I)
 
 def _norm_wpp(wpp):
     return re.sub(r"\D", "", wpp)[-11:] if wpp else ""
@@ -144,7 +146,67 @@ def _parse_data(s):
     except Exception:
         return datetime.min
 
-def detect_agendados(dialogs):
+# ── Chat lookup e extração de data de consulta ────────────────────────────────
+def build_chat_lookup(session, server):
+    """Baixa todos os chats e retorna dict {phone_8digits: chat_id}."""
+    base = f"https://{server}"
+    jh = {"Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest"}
+    all_chats = []
+    page = 0
+    while True:
+        try:
+            r = session.post(f"{base}/chatlist/store", json={"page_num": page}, headers=jh, timeout=20)
+            data = json.loads(r.text)
+        except Exception:
+            break
+        chats = data.get("chats", [])
+        all_chats.extend(chats)
+        if len(all_chats) >= data.get("total_chats", 0) or not chats:
+            break
+        page += 1
+    lookup = {}
+    for c in all_chats:
+        wa = re.sub(r"\D", "", c.get("wa_chat_id", ""))
+        cid = c.get("id", "")
+        if wa and cid:
+            for n in (8, 9, 10, 11, 12):
+                lookup.setdefault(wa[-n:], cid)
+    return lookup
+
+def get_appointment_date(chat_id, session, server):
+    """Extrai a data de consulta agendada das mensagens do chat."""
+    base = f"https://{server}"
+    seen_ids = set()
+    best_date = None
+    for pg in range(1, 6):
+        try:
+            r = session.get(f"{base}/messages2/{chat_id}/page/{pg}", timeout=20)
+            data = json.loads(r.text)
+        except Exception:
+            break
+        msgs = data.get("messages_and_notes", [])
+        if not msgs:
+            break
+        new_msgs = []
+        for item in msgs:
+            mid = str(item.get("m", {}).get("_id", {}).get("$oid", ""))
+            if mid and mid not in seen_ids:
+                seen_ids.add(mid)
+                new_msgs.append(item)
+        if not new_msgs:
+            break  # Fim da paginação real
+        for item in new_msgs:
+            m = item.get("m", {})
+            text = m.get("text", "")
+            if not text:
+                continue
+            if RE_AGEND_MSG.search(text):
+                dates = RE_DATE_DMY.findall(text)
+                if dates:
+                    best_date = dates[0]  # Pega a primeira data encontrada
+    return best_date
+
+def detect_agendados(dialogs, chat_lookup=None, session=None, server=None):
     """Retorna (agendados, reagendados) como listas separadas de dicts únicos por lead."""
     agendados, reagendados = [], []
     seen_ag, seen_re = set(), set()
@@ -159,6 +221,20 @@ def detect_agendados(dialogs):
         if RE_AGENDOU.search(texto) and key not in seen_ag:
             seen_ag.add(key)
             agendados.append(d)
+
+    # Enriquecer com data de consulta via mensagens do chat
+    if chat_lookup and session and server:
+        for d in agendados + reagendados:
+            wpp = _norm_wpp(d.get("whatsapp", ""))
+            chat_id = None
+            for n in (8, 9, 10, 11, 12):
+                chat_id = chat_lookup.get(wpp[-n:] if len(wpp) >= n else wpp)
+                if chat_id:
+                    break
+            if chat_id:
+                dc = get_appointment_date(chat_id, session, server)
+                if dc:
+                    d["data_consulta"] = dc
     return agendados, reagendados
 
 def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct):
@@ -194,7 +270,8 @@ def gerar_html(unit, m, date_from, date_to, atualizado):
 
     rows = ""
     for i, d in enumerate(m["agendados_lista"], 1):
-        rows += f"<tr><td>{i}</td><td>{d.get('lead','—')}</td><td>{d.get('data','—')}</td></tr>"
+        data_consulta = d.get("data_consulta", "—")
+        rows += f"<tr><td>{i}</td><td>{d.get('lead','—')}</td><td>{d.get('data','—')}</td><td>{data_consulta}</td></tr>"
 
     nome_uf = f"{unit['nome']} — {unit['estado']}"
 
@@ -397,8 +474,8 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
   <div class="sec-title">Últimos agendamentos — {m['total_agendados']} total</div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>#</th><th>Lead</th><th>Agendado em</th></tr></thead>
-      <tbody>{rows if rows else '<tr><td colspan="3" style="text-align:center;color:#aaa;padding:16px">Nenhum agendamento detectado</td></tr>'}</tbody>
+      <thead><tr><th>#</th><th>Lead</th><th>Agendado em</th><th>Data consulta</th></tr></thead>
+      <tbody>{rows if rows else '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:16px">Nenhum agendamento detectado</td></tr>'}</tbody>
     </table>
   </div>
 
@@ -511,7 +588,10 @@ def main():
             print(f"[{slug}] {len(leads)} leads")
             dialogs = fetch_dialogs(session, unit["server"], date_from, date_to)
             print(f"[{slug}] {len(dialogs)} diálogos")
-            agendados, reagendados = detect_agendados(dialogs)
+            print(f"[{slug}] Montando lookup de chats...")
+            chat_lookup = build_chat_lookup(session, unit["server"])
+            print(f"[{slug}] {len(chat_lookup)} entradas no lookup")
+            agendados, reagendados = detect_agendados(dialogs, chat_lookup, session, unit["server"])
             print(f"[{slug}] {len(agendados)} agendamentos · {len(reagendados)} reagendamentos")
             m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"])
             unit["metricas"] = m
