@@ -442,7 +442,19 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
             if len(_norm_wpp(l.get("whatsapp",""))) >= n
         )
     )
-    leads_sem_bv = total_leads - leads_com_bv  # inclui sem_dialogo + com_dialogo_sem_bv
+    leads_sem_bv = total_leads - leads_com_bv  # inclui sem_chat + com_chat_sem_bv
+
+    # Dos leads com chat mas sem BV: quantos agendaram mesmo assim?
+    # sem_bv_agendados = agendados cujo phone não tem BV registrada
+    sem_bv_agendados = sum(
+        1 for d in agendados
+        if not any(
+            _norm_wpp(d.get("whatsapp",""))[-n:] in bv_por_phone
+            for n in (8, 9, 10, 11)
+            if len(_norm_wpp(d.get("whatsapp",""))) >= n
+        )
+    )
+    sem_bv_so_interacao = max(0, leads_sem_bv - sem_chat_real - sem_bv_agendados)
 
     tempos = []
     tempos_comercial = []  # lead chegou seg–sex 8h–18h
@@ -472,6 +484,7 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
         "leads_com_chat": leads_com_chat, "sem_chat_real": sem_chat_real,
         "n_nao_agendou": n_nao_agendou,
         "leads_com_bv": leads_com_bv, "leads_sem_bv": leads_sem_bv,
+        "sem_bv_agendados": sem_bv_agendados, "sem_bv_so_interacao": sem_bv_so_interacao,
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "ag_novos": ag_novos, "ag_antigos": ag_antigos,
         "total_leads_novos": total_leads_novos, "total_leads_antigos": total_leads_antigos,
@@ -646,7 +659,7 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
 
   <div class="explain">
     Período: {m['total_leads_antigos']} leads de março + {m['total_leads_novos']} leads de abril = <strong>{m['total_leads']} total</strong>.<br>
-    <strong>Com BOAS-VINDAS: {m['leads_com_bv']}</strong> → SDR abriu e saudou · <strong>Sem BOAS-VINDAS: {m['leads_sem_bv']}</strong> ({m['sem_chat_real']} nunca entraram no ZapClinic + {m['leads_sem_bv'] - m['sem_chat_real']} entraram mas SDR não saudou)<br>
+    <strong>Com BOAS-VINDAS: {m['leads_com_bv']}</strong> → SDR abriu e saudou · <strong>Sem BOAS-VINDAS: {m['leads_sem_bv']}</strong> = {m['sem_chat_real']} nunca entraram no ZapClinic + {m['sem_bv_agendados']} agendaram sem BV + {m['sem_bv_so_interacao']} só interação sem BV<br>
     Chatlist (atendimento real): <strong>{m['leads_com_chat']} com chat</strong> · Diálogos c/ evento: <strong>{m['leads_com_dialogo']}</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
   </div>
 
@@ -684,7 +697,7 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card y">
       <div class="card-lbl">Sem BOAS-VINDAS</div>
       <div class="card-val">{m['leads_sem_bv']}</div>
-      <div class="card-sub">{m['sem_chat_real']} sem chat real · {m['leads_sem_bv'] - m['sem_chat_real']} com chat s/ BV</div>
+      <div class="card-sub">{m['sem_chat_real']} nunca entraram · {m['sem_bv_agendados']} agendaram s/ BV · {m['sem_bv_so_interacao']} só interação</div>
     </div>
     <div class="card {cor_tem_com}">
       <div class="card-lbl">Tempo resp. horário comercial</div>
