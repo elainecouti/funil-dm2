@@ -285,20 +285,29 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     gap               = max(0, agend_necessarios - total_agendados)
 
     # ── Lead novo vs antigo ───────────────────────────────────────────────────
-    # Novo = cadastrou no período; Antigo = reativado (cadastro antes do período)
-    period_from = datetime.strptime(date_from_str, "%Y-%m-%d")
-    leads_by_phone = {}
+    # Novo  = cadastrou em abril (mês atual) → agendado em abril
+    # Antigo = cadastrou em março ou antes   → agendado em abril (reativação)
+    mes_atual = datetime.now().month
+    ano_atual = datetime.now().year
+
+    leads_por_phone: dict = {}
     for l in leads:
         wpp = _norm_wpp(l.get("whatsapp", ""))
-        if wpp:
+        cad = _parse_data_hora(l.get("cadastro", ""))
+        if wpp and cad:
             for n in (8, 9, 10, 11):
-                leads_by_phone.setdefault(wpp[-n:], wpp)
+                leads_por_phone.setdefault(wpp[-n:], cad)
 
     ag_novos = ag_antigos = 0
     for d in agendados:
         wpp = _norm_wpp(d.get("whatsapp", ""))
-        is_novo = any(wpp[-n:] in leads_by_phone for n in (8, 9, 10, 11) if len(wpp) >= n)
-        if is_novo:
+        cad_dt = next(
+            (leads_por_phone[wpp[-n:]] for n in (8, 9, 10, 11)
+             if len(wpp) >= n and wpp[-n:] in leads_por_phone),
+            None
+        )
+        # Novo = cadastrou no mês atual (abril); antigo = março ou antes (ou não encontrado)
+        if cad_dt and cad_dt.month == mes_atual and cad_dt.year == ano_atual:
             ag_novos += 1
             d["tipo_lead"] = "novo"
         else:
