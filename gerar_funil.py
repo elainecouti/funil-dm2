@@ -146,6 +146,36 @@ def _parse_data(s):
     except Exception:
         return datetime.min
 
+def _parse_data_hora(s):
+    """Converte vários formatos de data/hora em datetime."""
+    if not s:
+        return None
+    s = s.strip()
+    try:
+        # Formato ZapClinic diálogos: "15/04/2026 às 11h13m"
+        if " às " in s:
+            date_part, time_part = s.split(" às ", 1)
+            time_part = time_part.replace("m", "")
+            h, mi = time_part.split("h")
+            dt = datetime.strptime(date_part.strip(), "%d/%m/%Y")
+            return dt.replace(hour=int(h), minute=int(mi or 0))
+        # Formato leads report: "2026-04-15 11:11"
+        if len(s) >= 16 and s[4] == "-":
+            return datetime.strptime(s[:16], "%Y-%m-%d %H:%M")
+        return datetime.strptime(s[:10], "%d/%m/%Y")
+    except Exception:
+        return None
+
+def _fmt_tempo(minutos):
+    """Formata minutos em string legível."""
+    if minutos is None:
+        return "—"
+    if minutos < 60:
+        return f"{int(minutos)}min"
+    h = int(minutos // 60)
+    m = int(minutos % 60)
+    return f"{h}h{m:02d}min" if m else f"{h}h"
+
 # ── Chat lookup e extração de data de consulta ────────────────────────────────
 def build_chat_lookup(session, server):
     """Baixa todos os chats e retorna dict {phone_8digits: chat_id}."""
@@ -237,12 +267,13 @@ def detect_agendados(dialogs, chat_lookup=None, session=None, server=None):
                     d["data_consulta"] = dc
     return agendados, reagendados
 
-def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct):
+def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_from_str):
     total_leads       = len(leads)
     total_dialogs     = len(dialogs)
     total_reagendados = len(reagendados)
-    # Total = agendamentos + reagendamentos (eventos, não leads únicos)
-    total_agendados = len(agendados) + len(reagendados)
+    # FIX: reagendados são subconjunto dos agendados — não somar
+    total_agendados   = len(agendados)
+
     wpp_leads   = {_norm_wpp(l.get("whatsapp")) for l in leads   if l.get("whatsapp")}
     wpp_dialogs = {_norm_wpp(d.get("whatsapp")) for d in dialogs if d.get("whatsapp")}
     wpp_leads.discard(""); wpp_dialogs.discard("")
@@ -251,14 +282,67 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct):
     tx_total          = round(total_agendados / total_leads * 100, 1) if total_leads else 0
     tx_dialogo        = round(total_agendados / leads_com_dialogo * 100, 1) if leads_com_dialogo else 0
     agend_necessarios = round(leads_com_dialogo * meta_pct / 100)
-    gap = max(0, agend_necessarios - total_agendados)
+    gap               = max(0, agend_necessarios - total_agendados)
+
+    # ── Lead novo vs antigo ───────────────────────────────────────────────────
+    # Novo = cadastrou no período; Antigo = reativado (cadastro antes do período)
+    period_from = datetime.strptime(date_from_str, "%Y-%m-%d")
+    leads_by_phone = {}
+    for l in leads:
+        wpp = _norm_wpp(l.get("whatsapp", ""))
+        if wpp:
+            for n in (8, 9, 10, 11):
+                leads_by_phone.setdefault(wpp[-n:], wpp)
+
+    ag_novos = ag_antigos = 0
+    for d in agendados:
+        wpp = _norm_wpp(d.get("whatsapp", ""))
+        is_novo = any(wpp[-n:] in leads_by_phone for n in (8, 9, 10, 11) if len(wpp) >= n)
+        if is_novo:
+            ag_novos += 1
+            d["tipo_lead"] = "novo"
+        else:
+            ag_antigos += 1
+            d["tipo_lead"] = "antigo"
+
+    # ── Tempo médio de resposta ───────────────────────────────────────────────
+    # Lead cadastro → 1º BOAS-VINDAS do período (SDR abre o atendimento)
+    bv_por_phone: dict = {}
+    for d in dialogs:
+        if "BOAS-VINDAS" in d.get("dialogo", "").upper():
+            wpp = _norm_wpp(d.get("whatsapp", ""))
+            dt  = _parse_data_hora(d.get("data", ""))
+            if wpp and dt:
+                for n in (8, 9, 10, 11):
+                    key = wpp[-n:]
+                    if key not in bv_por_phone or dt < bv_por_phone[key]:
+                        bv_por_phone[key] = dt
+
+    tempos = []
+    for l in leads:
+        wpp       = _norm_wpp(l.get("whatsapp", ""))
+        cadastro  = _parse_data_hora(l.get("cadastro", ""))
+        bv_dt     = next((bv_por_phone[wpp[-n:]] for n in (8, 9, 10, 11)
+                          if len(wpp) >= n and wpp[-n:] in bv_por_phone), None)
+        if cadastro and bv_dt and bv_dt >= cadastro:
+            diff_min = (bv_dt - cadastro).total_seconds() / 60
+            if 0 <= diff_min <= 60 * 24 * 7:   # ignora diferenças > 7 dias (reativações)
+                tempos.append(diff_min)
+
+    tempo_medio_min  = round(sum(tempos) / len(tempos)) if tempos else None
+    tempo_mediana_min = sorted(tempos)[len(tempos)//2] if tempos else None
+
     return {
         "total_leads": total_leads, "total_dialogs": total_dialogs,
         "leads_com_dialogo": leads_com_dialogo, "sem_resposta": sem_resposta,
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
+        "ag_novos": ag_novos, "ag_antigos": ag_antigos,
         "tx_total": tx_total, "tx_dialogo": tx_dialogo,
-        "meta_pct": meta_pct, "agend_necessarios": agend_necessarios,
-        "gap": gap, "agendados_lista": agendados[:25],
+        "meta_pct": meta_pct, "agend_necessarios": agend_necessarios, "gap": gap,
+        "tempo_medio_min": tempo_medio_min,
+        "tempo_mediana_min": tempo_mediana_min,
+        "n_tempos": len(tempos),
+        "agendados_lista": agendados[:25],
     }
 
 # ── HTML ──────────────────────────────────────────────────────────────────────
@@ -271,7 +355,17 @@ def gerar_html(unit, m, date_from, date_to, atualizado):
     rows = ""
     for i, d in enumerate(m["agendados_lista"], 1):
         data_consulta = d.get("data_consulta", "—")
-        rows += f"<tr><td>{i}</td><td>{d.get('lead','—')}</td><td>{d.get('data','—')}</td><td>{data_consulta}</td></tr>"
+        tipo = d.get("tipo_lead", "")
+        reagend_flag = " <span style='font-size:9px;background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:8px;font-weight:700'>REAG</span>" if d.get("dialogo","").upper() == "REAGENDOU" else ""
+        tipo_badge = ""
+        if tipo == "novo":
+            tipo_badge = " <span style='font-size:9px;background:#dcfce7;color:#166534;padding:1px 5px;border-radius:8px;font-weight:700'>NOVO</span>"
+        elif tipo == "antigo":
+            tipo_badge = " <span style='font-size:9px;background:#fef9c3;color:#854d0e;padding:1px 5px;border-radius:8px;font-weight:700'>REATIV</span>"
+        rows += f"<tr><td>{i}</td><td>{d.get('lead','—')}{tipo_badge}{reagend_flag}</td><td>{d.get('data','—')}</td><td>{data_consulta}</td></tr>"
+
+    tempo_medio_str  = _fmt_tempo(m.get("tempo_medio_min"))
+    tempo_median_str = _fmt_tempo(m.get("tempo_mediana_min"))
 
     nome_uf = f"{unit['nome']} — {unit['estado']}"
 
@@ -416,17 +510,22 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card g">
       <div class="card-lbl">Com diálogo</div>
       <div class="card-val">{m['leads_com_dialogo']}</div>
-      <div class="card-sub">responderam</div>
+      <div class="card-sub">atendidos pelo SDR</div>
     </div>
     <div class="card p">
-      <div class="card-lbl">Agendados</div>
+      <div class="card-lbl">Agendados total</div>
       <div class="card-val">{m['total_agendados']}</div>
-      <div class="card-sub">no período</div>
+      <div class="card-sub">{m['total_reagendados']} reagendaram</div>
     </div>
-    <div class="card b">
-      <div class="card-lbl">Reagendados</div>
-      <div class="card-val">{m['total_reagendados']}</div>
-      <div class="card-sub">remarcararam consulta</div>
+    <div class="card g">
+      <div class="card-lbl">Leads novos agend.</div>
+      <div class="card-val">{m['ag_novos']}</div>
+      <div class="card-sub">chegou no período</div>
+    </div>
+    <div class="card y">
+      <div class="card-lbl">Reativados agend.</div>
+      <div class="card-val">{m['ag_antigos']}</div>
+      <div class="card-sub">lead antigo voltou</div>
     </div>
     <div class="card {'r' if m['gap'] > 0 else 'g'}">
       <div class="card-lbl">Gap meta {m['meta_pct']}%</div>
@@ -436,10 +535,15 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card y">
       <div class="card-lbl">Sem resposta</div>
       <div class="card-val">{m['sem_resposta']}</div>
-      <div class="card-sub">nunca responderam</div>
+      <div class="card-sub">nunca atendidos</div>
+    </div>
+    <div class="card b">
+      <div class="card-lbl">Tempo médio resp.</div>
+      <div class="card-val" style="font-size:20px">{tempo_medio_str}</div>
+      <div class="card-sub">mediana: {tempo_median_str} · {m['n_tempos']} leads</div>
     </div>
     <div class="card n">
-      <div class="card-lbl">Taxa / total</div>
+      <div class="card-lbl">Taxa / total leads</div>
       <div class="card-val">{m['tx_total']}%</div>
       <div class="card-sub">referência apenas</div>
     </div>
@@ -593,7 +697,7 @@ def main():
             print(f"[{slug}] {len(chat_lookup)} entradas no lookup")
             agendados, reagendados = detect_agendados(dialogs, chat_lookup, session, unit["server"])
             print(f"[{slug}] {len(agendados)} agendamentos · {len(reagendados)} reagendamentos")
-            m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"])
+            m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"], date_from)
             unit["metricas"] = m
             units_ok.append(unit)
 
