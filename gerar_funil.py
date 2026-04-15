@@ -362,7 +362,7 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     tx_novos   = round(ag_novos  / leads_novos_com_dialogo  * 100, 1) if leads_novos_com_dialogo  else 0
     tx_antigos = round(ag_antigos / leads_antigos_com_dialogo * 100, 1) if leads_antigos_com_dialogo else 0
 
-    # ── Tempo médio de resposta ───────────────────────────────────────────────
+    # ── Tempo médio de resposta + contagem com/sem BOAS-VINDAS ──────────────────
     # Lead cadastro → 1º BOAS-VINDAS do período (SDR abre o atendimento)
     bv_por_phone: dict = {}
     for d in dialogs:
@@ -374,6 +374,17 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
                     key = wpp[-n:]
                     if key not in bv_por_phone or dt < bv_por_phone[key]:
                         bv_por_phone[key] = dt
+
+    # Quantos leads do período receberam BOAS-VINDAS
+    leads_com_bv = sum(
+        1 for l in leads
+        if any(
+            _norm_wpp(l.get("whatsapp",""))[-n:] in bv_por_phone
+            for n in (8, 9, 10, 11)
+            if len(_norm_wpp(l.get("whatsapp",""))) >= n
+        )
+    )
+    leads_sem_bv = total_leads - leads_com_bv  # inclui sem_dialogo + com_dialogo_sem_bv
 
     tempos = []
     tempos_comercial = []  # lead chegou seg–sex 8h–18h
@@ -400,6 +411,7 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     return {
         "total_leads": total_leads, "total_dialogs": total_dialogs,
         "leads_com_dialogo": leads_com_dialogo, "sem_resposta": sem_resposta,
+        "leads_com_bv": leads_com_bv, "leads_sem_bv": leads_sem_bv,
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "ag_novos": ag_novos, "ag_antigos": ag_antigos,
         "total_leads_novos": total_leads_novos, "total_leads_antigos": total_leads_antigos,
@@ -574,8 +586,8 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
 
   <div class="explain">
     Período: {m['total_leads_antigos']} leads de março + {m['total_leads_novos']} leads de abril = <strong>{m['total_leads']} total</strong>.<br>
-    <strong>Sem resposta ({m['sem_resposta']})</strong> = cadastraram no período mas não apareceram em nenhum diálogo dos 37 dias.<br>
-    Denominador taxa geral: <strong>{m['leads_com_dialogo']} leads com diálogo</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
+    <strong>Com BOAS-VINDAS: {m['leads_com_bv']}</strong> → SDR abriu e saudou · <strong>Sem BOAS-VINDAS: {m['leads_sem_bv']}</strong> ({m['sem_resposta']} sem diálogo nenhum + {m['leads_sem_bv'] - m['sem_resposta']} com diálogo mas SDR não abriu)<br>
+    Denominador taxa geral: <strong>{m['leads_com_dialogo']} com diálogo</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
   </div>
 
   <div class="cards">
@@ -610,9 +622,9 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-sub">{"faltando" if m['gap'] > 0 else "atingida"}</div>
     </div>
     <div class="card y">
-      <div class="card-lbl">Sem resposta</div>
-      <div class="card-val">{m['sem_resposta']}</div>
-      <div class="card-sub">sem diálogo nos 37 dias</div>
+      <div class="card-lbl">Sem BOAS-VINDAS</div>
+      <div class="card-val">{m['leads_sem_bv']}</div>
+      <div class="card-sub">{m['sem_resposta']} sem diálogo · {m['leads_sem_bv'] - m['sem_resposta']} diálogo s/ BV</div>
     </div>
     <div class="card {cor_tem_com}">
       <div class="card-lbl">Tempo resp. horário comercial</div>
