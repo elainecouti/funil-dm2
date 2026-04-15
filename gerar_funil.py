@@ -176,6 +176,10 @@ def _fmt_tempo(minutos):
     m = int(minutos % 60)
     return f"{h}h{m:02d}min" if m else f"{h}h"
 
+def is_horario_comercial(dt):
+    """True se o datetime cair em dia útil (seg–sex) das 8h às 18h."""
+    return dt.weekday() < 5 and 8 <= dt.hour < 18
+
 # ── Chat lookup e extração de data de consulta ────────────────────────────────
 def build_chat_lookup(session, server):
     """Baixa todos os chats e retorna dict {phone_8digits: chat_id}."""
@@ -291,8 +295,10 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     ano_atual = datetime.now().year
 
     leads_por_phone: dict = {}
-    total_leads_novos  = 0   # leads que cadastraram no mês atual
-    total_leads_antigos = 0  # leads que cadastraram em mês anterior
+    leads_novos_phones:   set = set()   # last-11 phones de leads do mês atual
+    leads_antigos_phones: set = set()   # last-11 phones de leads de meses anteriores
+    total_leads_novos  = 0
+    total_leads_antigos = 0
     for l in leads:
         wpp = _norm_wpp(l.get("whatsapp", ""))
         cad = _parse_data_hora(l.get("cadastro", ""))
@@ -302,8 +308,16 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
         if cad:
             if cad.month == mes_atual and cad.year == ano_atual:
                 total_leads_novos += 1
+                if wpp:
+                    leads_novos_phones.add(wpp)
             else:
                 total_leads_antigos += 1
+                if wpp:
+                    leads_antigos_phones.add(wpp)
+
+    # Denominadores corretos: leads com diálogo por grupo (não total de leads)
+    leads_novos_com_dialogo  = len(leads_novos_phones  & wpp_dialogs)
+    leads_antigos_com_dialogo = len(leads_antigos_phones & wpp_dialogs)
 
     ag_novos = ag_antigos = 0
     for d in agendados:
@@ -324,8 +338,8 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
                 d["tipo_lead"] = "antigo"
         # AGENDOU em mês anterior → sem badge de novo/antigo (março agendando março)
 
-    tx_novos   = round(ag_novos  / total_leads_novos  * 100, 1) if total_leads_novos  else 0
-    tx_antigos = round(ag_antigos / total_leads_antigos * 100, 1) if total_leads_antigos else 0
+    tx_novos   = round(ag_novos  / leads_novos_com_dialogo  * 100, 1) if leads_novos_com_dialogo  else 0
+    tx_antigos = round(ag_antigos / leads_antigos_com_dialogo * 100, 1) if leads_antigos_com_dialogo else 0
 
     # ── Tempo médio de resposta ───────────────────────────────────────────────
     # Lead cadastro → 1º BOAS-VINDAS do período (SDR abre o atendimento)
@@ -341,6 +355,8 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
                         bv_por_phone[key] = dt
 
     tempos = []
+    tempos_comercial = []  # lead chegou seg–sex 8h–18h
+    tempos_fora      = []  # lead chegou fora do horário comercial
     for l in leads:
         wpp       = _norm_wpp(l.get("whatsapp", ""))
         cadastro  = _parse_data_hora(l.get("cadastro", ""))
@@ -350,9 +366,15 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
             diff_min = (bv_dt - cadastro).total_seconds() / 60
             if 0 <= diff_min <= 60 * 24 * 7:   # ignora diferenças > 7 dias (reativações)
                 tempos.append(diff_min)
+                if is_horario_comercial(cadastro):
+                    tempos_comercial.append(diff_min)
+                else:
+                    tempos_fora.append(diff_min)
 
-    tempo_medio_min  = round(sum(tempos) / len(tempos)) if tempos else None
-    tempo_mediana_min = sorted(tempos)[len(tempos)//2] if tempos else None
+    tempo_medio_min   = round(sum(tempos) / len(tempos)) if tempos else None
+    tempo_mediana_min = sorted(tempos)[len(tempos)//2]   if tempos else None
+    tempo_med_comercial = round(sum(tempos_comercial) / len(tempos_comercial)) if tempos_comercial else None
+    tempo_med_fora      = round(sum(tempos_fora)      / len(tempos_fora))      if tempos_fora      else None
 
     return {
         "total_leads": total_leads, "total_dialogs": total_dialogs,
@@ -360,12 +382,18 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "ag_novos": ag_novos, "ag_antigos": ag_antigos,
         "total_leads_novos": total_leads_novos, "total_leads_antigos": total_leads_antigos,
+        "leads_novos_com_dialogo": leads_novos_com_dialogo,
+        "leads_antigos_com_dialogo": leads_antigos_com_dialogo,
         "tx_novos": tx_novos, "tx_antigos": tx_antigos,
         "tx_total": tx_total, "tx_dialogo": tx_dialogo,
         "meta_pct": meta_pct, "agend_necessarios": agend_necessarios, "gap": gap,
         "tempo_medio_min": tempo_medio_min,
         "tempo_mediana_min": tempo_mediana_min,
         "n_tempos": len(tempos),
+        "tempo_med_comercial": tempo_med_comercial,
+        "tempo_med_fora": tempo_med_fora,
+        "n_tempos_comercial": len(tempos_comercial),
+        "n_tempos_fora": len(tempos_fora),
         "agendados_lista": agendados[:25],
     }
 
@@ -390,6 +418,10 @@ def gerar_html(unit, m, date_from, date_to, atualizado):
 
     tempo_medio_str  = _fmt_tempo(m.get("tempo_medio_min"))
     tempo_median_str = _fmt_tempo(m.get("tempo_mediana_min"))
+    tempo_com_str    = _fmt_tempo(m.get("tempo_med_comercial"))
+    tempo_fora_str   = _fmt_tempo(m.get("tempo_med_fora"))
+    cor_tem_com  = "r" if (m.get("tempo_med_comercial") or 0) > 60 else "b"
+    cor_tem_fora = "r" if (m.get("tempo_med_fora")      or 0) > 240 else "y"
 
     nome_uf = f"{unit['nome']} — {unit['estado']}"
 
@@ -544,12 +576,12 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card g">
       <div class="card-lbl">Taxa leads novos (abril)</div>
       <div class="card-val">{m['tx_novos']}%</div>
-      <div class="card-sub">{m['ag_novos']} agend. / {m['total_leads_novos']} leads</div>
+      <div class="card-sub">{m['ag_novos']} agend. / {m['leads_novos_com_dialogo']} c/ diálogo</div>
     </div>
     <div class="card y">
       <div class="card-lbl">Taxa leads antigos (março)</div>
       <div class="card-val">{m['tx_antigos']}%</div>
-      <div class="card-sub">{m['ag_antigos']} agend. / {m['total_leads_antigos']} leads</div>
+      <div class="card-sub">{m['ag_antigos']} agend. / {m['leads_antigos_com_dialogo']} c/ diálogo</div>
     </div>
     <div class="card {'r' if m['gap'] > 0 else 'g'}">
       <div class="card-lbl">Gap meta {m['meta_pct']}%</div>
@@ -561,15 +593,15 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-val">{m['sem_resposta']}</div>
       <div class="card-sub">nunca atendidos</div>
     </div>
-    <div class="card b">
-      <div class="card-lbl">Tempo médio resp.</div>
-      <div class="card-val" style="font-size:20px">{tempo_medio_str}</div>
-      <div class="card-sub">mediana: {tempo_median_str} · {m['n_tempos']} leads</div>
+    <div class="card {cor_tem_com}">
+      <div class="card-lbl">Tempo resp. horário comercial</div>
+      <div class="card-val" style="font-size:20px">{tempo_com_str}</div>
+      <div class="card-sub">{m['n_tempos_comercial']} leads · seg–sex 8h–18h</div>
     </div>
-    <div class="card n">
-      <div class="card-lbl">Taxa / total leads</div>
-      <div class="card-val">{m['tx_total']}%</div>
-      <div class="card-sub">referência apenas</div>
+    <div class="card {cor_tem_fora}">
+      <div class="card-lbl">Tempo resp. fora do horário</div>
+      <div class="card-val" style="font-size:20px">{tempo_fora_str}</div>
+      <div class="card-sub">{m['n_tempos_fora']} leads · noite / fim de sem.</div>
     </div>
   </div>
 
