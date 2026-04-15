@@ -278,9 +278,22 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     # FIX: reagendados são subconjunto dos agendados — não somar
     total_agendados   = len(agendados)
 
+    mes_atual = datetime.now().month
+    ano_atual = datetime.now().year
+
     wpp_leads   = {_norm_wpp(l.get("whatsapp")) for l in leads   if l.get("whatsapp")}
     wpp_dialogs = {_norm_wpp(d.get("whatsapp")) for d in dialogs if d.get("whatsapp")}
     wpp_leads.discard(""); wpp_dialogs.discard("")
+
+    # Diálogos criados especificamente no mês atual (abril) — para taxa novos/antigos
+    wpp_dialogs_mes = {
+        _norm_wpp(d.get("whatsapp", ""))
+        for d in dialogs
+        if d.get("whatsapp") and (dt := _parse_data(d.get("data", ""))) and
+           dt != datetime.min and dt.month == mes_atual and dt.year == ano_atual
+    }
+    wpp_dialogs_mes.discard("")
+
     leads_com_dialogo = len(wpp_leads & wpp_dialogs) if wpp_leads and wpp_dialogs else total_dialogs
     sem_resposta      = max(0, total_leads - leads_com_dialogo)
     tx_total          = round(total_agendados / total_leads * 100, 1) if total_leads else 0
@@ -291,9 +304,6 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     # ── Lead novo vs antigo ───────────────────────────────────────────────────
     # Novo  = cadastrou em abril (mês atual) → agendado em abril
     # Antigo = cadastrou em março ou antes   → agendado em abril (reativação)
-    mes_atual = datetime.now().month
-    ano_atual = datetime.now().year
-
     leads_por_phone: dict = {}
     leads_novos_phones:   set = set()   # last-11 phones de leads do mês atual
     leads_antigos_phones: set = set()   # last-11 phones de leads de meses anteriores
@@ -315,9 +325,11 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
                 if wpp:
                     leads_antigos_phones.add(wpp)
 
-    # Denominadores corretos: leads com diálogo por grupo (não total de leads)
-    leads_novos_com_dialogo  = len(leads_novos_phones  & wpp_dialogs)
-    leads_antigos_com_dialogo = len(leads_antigos_phones & wpp_dialogs)
+    # Denominadores: leads que interagiram NESTE MÊS (abril), por grupo
+    # Novos   = cadastrou em abril  + teve diálogo em abril
+    # Antigos = cadastrou em março  + teve diálogo em abril (reativação real)
+    leads_novos_com_dialogo   = len(leads_novos_phones  & wpp_dialogs_mes)
+    leads_antigos_com_dialogo = len(leads_antigos_phones & wpp_dialogs_mes)
 
     ag_novos = ag_antigos = 0
     for d in agendados:
@@ -574,14 +586,14 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-sub">{m['total_reagendados']} reagendaram</div>
     </div>
     <div class="card g">
-      <div class="card-lbl">Taxa leads novos (abril)</div>
+      <div class="card-lbl">Novos — interagiram em abril</div>
       <div class="card-val">{m['tx_novos']}%</div>
-      <div class="card-sub">{m['ag_novos']} agend. / {m['leads_novos_com_dialogo']} c/ diálogo</div>
+      <div class="card-sub">{m['ag_novos']} agend. / {m['leads_novos_com_dialogo']} cadastro+diál. abril</div>
     </div>
     <div class="card y">
-      <div class="card-lbl">Taxa leads antigos (março)</div>
+      <div class="card-lbl">Antigos — interagiram em abril</div>
       <div class="card-val">{m['tx_antigos']}%</div>
-      <div class="card-sub">{m['ag_antigos']} agend. / {m['leads_antigos_com_dialogo']} c/ diálogo</div>
+      <div class="card-sub">{m['ag_antigos']} agend. / {m['leads_antigos_com_dialogo']} reativados em abril</div>
     </div>
     <div class="card {'r' if m['gap'] > 0 else 'g'}">
       <div class="card-lbl">Gap meta {m['meta_pct']}%</div>
