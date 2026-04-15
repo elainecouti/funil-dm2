@@ -241,7 +241,11 @@ def get_appointment_date(chat_id, session, server):
     return best_date
 
 def detect_agendados(dialogs, chat_lookup=None, session=None, server=None):
-    """Retorna (agendados, reagendados) como listas separadas de dicts únicos por lead."""
+    """Retorna (agendados_unicos, reagendados, n_total_unicos).
+    agendados_unicos = union de seen_ag | seen_re (leads que agendaram OU reagendaram).
+    Nota: \bagendou\b não casa dentro de 'reagendou' — leads que só têm 'reagendou'
+    ficariam de fora se usarmos apenas a lista de agendados. Usamos a union.
+    """
     agendados, reagendados = [], []
     seen_ag, seen_re = set(), set()
     for d in sorted(dialogs, key=lambda x: _parse_data(x.get("data", "")), reverse=True):
@@ -255,6 +259,11 @@ def detect_agendados(dialogs, chat_lookup=None, session=None, server=None):
         if RE_AGENDOU.search(texto) and key not in seen_ag:
             seen_ag.add(key)
             agendados.append(d)
+
+    # Leads que só têm reagendou (sem agendou prévio no período) — adiciona à lista principal
+    reagendados_only = [d for d in reagendados
+                        if (_norm_wpp(d.get("whatsapp")) or d.get("lead","")) not in seen_ag]
+    agendados = agendados + reagendados_only
 
     # Enriquecer com data de consulta via mensagens do chat
     if chat_lookup and session and server:
@@ -564,26 +573,26 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
   </div>
 
   <div class="explain">
-    De {m['total_leads']} leads gerados, <strong>{m['sem_resposta']}</strong> nunca responderam — não entram no cálculo.<br>
-    Denominador correto: <strong>{m['leads_com_dialogo']} leads com diálogo</strong>.<br>
-    Taxa sobre total: <strong>{m['tx_total']}%</strong> (referência) · Taxa real: <strong>{m['tx_dialogo']}%</strong>
+    Período: {m['total_leads_antigos']} leads de março + {m['total_leads_novos']} leads de abril = <strong>{m['total_leads']} total</strong>.<br>
+    <strong>Sem resposta ({m['sem_resposta']})</strong> = cadastraram no período mas não apareceram em nenhum diálogo dos 37 dias.<br>
+    Denominador taxa geral: <strong>{m['leads_com_dialogo']} leads com diálogo</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
   </div>
 
   <div class="cards">
     <div class="card b">
       <div class="card-lbl">Leads totais</div>
       <div class="card-val">{m['total_leads']}</div>
-      <div class="card-sub">no período</div>
+      <div class="card-sub">{m['total_leads_antigos']} março · {m['total_leads_novos']} abril</div>
     </div>
     <div class="card g">
-      <div class="card-lbl">Com diálogo</div>
+      <div class="card-lbl">Com diálogo (37 dias)</div>
       <div class="card-val">{m['leads_com_dialogo']}</div>
       <div class="card-sub">atendidos pelo SDR</div>
     </div>
     <div class="card p">
       <div class="card-lbl">Agendados total</div>
       <div class="card-val">{m['total_agendados']}</div>
-      <div class="card-sub">{m['total_reagendados']} reagendaram</div>
+      <div class="card-sub">{m['total_reagendados']} só-reagendou inclusos</div>
     </div>
     <div class="card g">
       <div class="card-lbl">Novos — interagiram em abril</div>
@@ -603,7 +612,7 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card y">
       <div class="card-lbl">Sem resposta</div>
       <div class="card-val">{m['sem_resposta']}</div>
-      <div class="card-sub">nunca atendidos</div>
+      <div class="card-sub">sem diálogo nos 37 dias</div>
     </div>
     <div class="card {cor_tem_com}">
       <div class="card-lbl">Tempo resp. horário comercial</div>
