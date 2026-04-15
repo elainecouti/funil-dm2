@@ -291,12 +291,19 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     ano_atual = datetime.now().year
 
     leads_por_phone: dict = {}
+    total_leads_novos  = 0   # leads que cadastraram no mês atual
+    total_leads_antigos = 0  # leads que cadastraram em mês anterior
     for l in leads:
         wpp = _norm_wpp(l.get("whatsapp", ""))
         cad = _parse_data_hora(l.get("cadastro", ""))
         if wpp and cad:
             for n in (8, 9, 10, 11):
                 leads_por_phone.setdefault(wpp[-n:], cad)
+        if cad:
+            if cad.month == mes_atual and cad.year == ano_atual:
+                total_leads_novos += 1
+            else:
+                total_leads_antigos += 1
 
     ag_novos = ag_antigos = 0
     for d in agendados:
@@ -306,13 +313,15 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
              if len(wpp) >= n and wpp[-n:] in leads_por_phone),
             None
         )
-        # Novo = cadastrou no mês atual (abril); antigo = março ou antes (ou não encontrado)
         if cad_dt and cad_dt.month == mes_atual and cad_dt.year == ano_atual:
             ag_novos += 1
             d["tipo_lead"] = "novo"
         else:
             ag_antigos += 1
             d["tipo_lead"] = "antigo"
+
+    tx_novos   = round(ag_novos  / total_leads_novos  * 100, 1) if total_leads_novos  else 0
+    tx_antigos = round(ag_antigos / total_leads_antigos * 100, 1) if total_leads_antigos else 0
 
     # ── Tempo médio de resposta ───────────────────────────────────────────────
     # Lead cadastro → 1º BOAS-VINDAS do período (SDR abre o atendimento)
@@ -346,6 +355,8 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
         "leads_com_dialogo": leads_com_dialogo, "sem_resposta": sem_resposta,
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "ag_novos": ag_novos, "ag_antigos": ag_antigos,
+        "total_leads_novos": total_leads_novos, "total_leads_antigos": total_leads_antigos,
+        "tx_novos": tx_novos, "tx_antigos": tx_antigos,
         "tx_total": tx_total, "tx_dialogo": tx_dialogo,
         "meta_pct": meta_pct, "agend_necessarios": agend_necessarios, "gap": gap,
         "tempo_medio_min": tempo_medio_min,
@@ -527,14 +538,14 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-sub">{m['total_reagendados']} reagendaram</div>
     </div>
     <div class="card g">
-      <div class="card-lbl">Leads novos agend.</div>
-      <div class="card-val">{m['ag_novos']}</div>
-      <div class="card-sub">chegou no período</div>
+      <div class="card-lbl">Taxa leads novos (abril)</div>
+      <div class="card-val">{m['tx_novos']}%</div>
+      <div class="card-sub">{m['ag_novos']} agend. / {m['total_leads_novos']} leads</div>
     </div>
     <div class="card y">
-      <div class="card-lbl">Reativados agend.</div>
-      <div class="card-val">{m['ag_antigos']}</div>
-      <div class="card-sub">lead antigo voltou</div>
+      <div class="card-lbl">Taxa leads antigos (março)</div>
+      <div class="card-val">{m['tx_antigos']}%</div>
+      <div class="card-sub">{m['ag_antigos']} agend. / {m['total_leads_antigos']} leads</div>
     </div>
     <div class="card {'r' if m['gap'] > 0 else 'g'}">
       <div class="card-lbl">Gap meta {m['meta_pct']}%</div>
