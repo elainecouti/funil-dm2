@@ -182,7 +182,10 @@ def is_horario_comercial(dt):
 
 # ── Chat lookup e extração de data de consulta ────────────────────────────────
 def build_chat_lookup(session, server):
-    """Baixa todos os chats e retorna dict {phone_8digits: chat_id}."""
+    """Baixa todos os chats e retorna dict {phone_suffix: chat_object}.
+    O objeto completo contém: id, tags, status, funnel_steps_ids, wa_chat_id.
+    Use chat_obj["id"] onde antes se usava chat_id diretamente.
+    """
     base = f"https://{server}"
     jh = {"Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest"}
     all_chats = []
@@ -201,10 +204,9 @@ def build_chat_lookup(session, server):
     lookup = {}
     for c in all_chats:
         wa = re.sub(r"\D", "", c.get("wa_chat_id", ""))
-        cid = c.get("id", "")
-        if wa and cid:
+        if wa and c.get("id"):
             for n in (8, 9, 10, 11, 12):
-                lookup.setdefault(wa[-n:], cid)
+                lookup.setdefault(wa[-n:], c)
     return lookup
 
 def get_appointment_date(chat_id, session, server):
@@ -265,22 +267,48 @@ def detect_agendados(dialogs, chat_lookup=None, session=None, server=None):
                         if (_norm_wpp(d.get("whatsapp")) or d.get("lead","")) not in seen_ag]
     agendados = agendados + reagendados_only
 
+    # ── Chatlist: adicionar leads com tag AGENDADO/REAGENDADO não capturados nos diálogos ──
+    # Itera por chat_id único para evitar processar o mesmo chat várias vezes (múltiplos suffixes)
+    if chat_lookup:
+        seen_ids: set = set()
+        for chat_obj in chat_lookup.values():
+            if not isinstance(chat_obj, dict):
+                continue
+            cid = chat_obj.get("id", "")
+            if cid in seen_ids:
+                continue
+            seen_ids.add(cid)
+            tags = {t.get("text", "").upper() for t in chat_obj.get("tags", []) if isinstance(t, dict)}
+            wa = re.sub(r"\D", "", chat_obj.get("wa_chat_id", ""))
+            key = wa[-11:] if len(wa) >= 11 else (wa[-8:] if len(wa) >= 8 else wa)
+            if not key:
+                continue
+            stub = {"whatsapp": key, "lead": chat_obj.get("name", "—"),
+                    "data": (chat_obj.get("updated") or "")[:10], "_source": "chatlist"}
+            if "AGENDADO" in tags and key not in seen_ag:
+                seen_ag.add(key)
+                agendados.append({**stub, "dialogo": "AGENDADO [tag chatlist]"})
+            if "REAGENDADO" in tags and key not in seen_re:
+                seen_re.add(key)
+                reagendados.append({**stub, "dialogo": "REAGENDADO [tag chatlist]"})
+
     # Enriquecer com data de consulta via mensagens do chat
     if chat_lookup and session and server:
         for d in agendados + reagendados:
             wpp = _norm_wpp(d.get("whatsapp", ""))
-            chat_id = None
+            chat_obj = None
             for n in (8, 9, 10, 11, 12):
-                chat_id = chat_lookup.get(wpp[-n:] if len(wpp) >= n else wpp)
-                if chat_id:
+                chat_obj = chat_lookup.get(wpp[-n:] if len(wpp) >= n else wpp)
+                if chat_obj:
                     break
+            chat_id = chat_obj["id"] if isinstance(chat_obj, dict) else chat_obj
             if chat_id:
                 dc = get_appointment_date(chat_id, session, server)
                 if dc:
                     d["data_consulta"] = dc
     return agendados, reagendados
 
-def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_from_str):
+def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_from_str, chat_lookup=None):
     total_leads       = len(leads)
     total_dialogs     = len(dialogs)
     total_reagendados = len(reagendados)
@@ -294,6 +322,26 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     wpp_dialogs = {_norm_wpp(d.get("whatsapp")) for d in dialogs if d.get("whatsapp")}
     wpp_leads.discard(""); wpp_dialogs.discard("")
 
+    # ── Chatlist: pré-processar phones e tags (usado após leads_com_dialogo) ──
+    wpp_chatlist = set()
+    n_nao_agendou = 0
+    if chat_lookup:
+        seen_cids: set = set()
+        for suffix, chat_obj in chat_lookup.items():
+            if len(suffix) >= 8:
+                wpp_chatlist.add(suffix)
+            if not isinstance(chat_obj, dict):
+                continue
+            cid = chat_obj.get("id", "")
+            if cid in seen_cids:
+                continue
+            seen_cids.add(cid)
+            tags = {t.get("text", "").upper() for t in chat_obj.get("tags", []) if isinstance(t, dict)}
+            wa = re.sub(r"\D", "", chat_obj.get("wa_chat_id", ""))
+            key = wa[-11:] if len(wa) >= 11 else (wa[-8:] if len(wa) >= 8 else wa)
+            if "N_AGENDOU" in tags and key in wpp_leads:
+                n_nao_agendou += 1
+
     # Diálogos criados especificamente no mês atual (abril) — para taxa novos/antigos
     wpp_dialogs_mes = {
         _norm_wpp(d.get("whatsapp", ""))
@@ -305,6 +353,16 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
 
     leads_com_dialogo = len(wpp_leads & wpp_dialogs) if wpp_leads and wpp_dialogs else total_dialogs
     sem_resposta      = max(0, total_leads - leads_com_dialogo)
+
+    # ── Chatlist: fonte de verdade de atendimento ─────────────────────────────────
+    # leads_com_chat = phone do lead aparece no chatlist (entrou no ZapClinic alguma vez)
+    # sem_chat_real  = nunca entrou no ZapClinic — verdadeiro "sem atendimento"
+    if wpp_chatlist and wpp_leads:
+        leads_com_chat = len(wpp_leads & wpp_chatlist)
+    else:
+        leads_com_chat = leads_com_dialogo  # fallback se chatlist indisponível
+    sem_chat_real = max(0, total_leads - leads_com_chat)
+
     tx_total          = round(total_agendados / total_leads * 100, 1) if total_leads else 0
     tx_dialogo        = round(total_agendados / leads_com_dialogo * 100, 1) if leads_com_dialogo else 0
     agend_necessarios = round(leads_com_dialogo * meta_pct / 100)
@@ -411,6 +469,8 @@ def calcular_metricas(leads, dialogs, agendados, reagendados, meta_pct, date_fro
     return {
         "total_leads": total_leads, "total_dialogs": total_dialogs,
         "leads_com_dialogo": leads_com_dialogo, "sem_resposta": sem_resposta,
+        "leads_com_chat": leads_com_chat, "sem_chat_real": sem_chat_real,
+        "n_nao_agendou": n_nao_agendou,
         "leads_com_bv": leads_com_bv, "leads_sem_bv": leads_sem_bv,
         "total_agendados": total_agendados, "total_reagendados": total_reagendados,
         "ag_novos": ag_novos, "ag_antigos": ag_antigos,
@@ -586,8 +646,8 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
 
   <div class="explain">
     Período: {m['total_leads_antigos']} leads de março + {m['total_leads_novos']} leads de abril = <strong>{m['total_leads']} total</strong>.<br>
-    <strong>Com BOAS-VINDAS: {m['leads_com_bv']}</strong> → SDR abriu e saudou · <strong>Sem BOAS-VINDAS: {m['leads_sem_bv']}</strong> ({m['sem_resposta']} sem diálogo nenhum + {m['leads_sem_bv'] - m['sem_resposta']} com diálogo mas SDR não abriu)<br>
-    Denominador taxa geral: <strong>{m['leads_com_dialogo']} com diálogo</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
+    <strong>Com BOAS-VINDAS: {m['leads_com_bv']}</strong> → SDR abriu e saudou · <strong>Sem BOAS-VINDAS: {m['leads_sem_bv']}</strong> ({m['sem_chat_real']} nunca entraram no ZapClinic + {m['leads_sem_bv'] - m['sem_chat_real']} entraram mas SDR não saudou)<br>
+    Chatlist (atendimento real): <strong>{m['leads_com_chat']} com chat</strong> · Diálogos c/ evento: <strong>{m['leads_com_dialogo']}</strong> · Taxa real: <strong>{m['tx_dialogo']}%</strong>
   </div>
 
   <div class="cards">
@@ -597,9 +657,9 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="card-sub">{m['total_leads_antigos']} março · {m['total_leads_novos']} abril</div>
     </div>
     <div class="card g">
-      <div class="card-lbl">Com diálogo (37 dias)</div>
-      <div class="card-val">{m['leads_com_dialogo']}</div>
-      <div class="card-sub">atendidos pelo SDR</div>
+      <div class="card-lbl">Entrou no ZapClinic</div>
+      <div class="card-val">{m['leads_com_chat']}</div>
+      <div class="card-sub">{m['sem_chat_real']} nunca entraram · {m['leads_com_dialogo']} com evento</div>
     </div>
     <div class="card p">
       <div class="card-lbl">Agendados total</div>
@@ -624,7 +684,7 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
     <div class="card y">
       <div class="card-lbl">Sem BOAS-VINDAS</div>
       <div class="card-val">{m['leads_sem_bv']}</div>
-      <div class="card-sub">{m['sem_resposta']} sem diálogo · {m['leads_sem_bv'] - m['sem_resposta']} diálogo s/ BV</div>
+      <div class="card-sub">{m['sem_chat_real']} sem chat real · {m['leads_sem_bv'] - m['sem_chat_real']} com chat s/ BV</div>
     </div>
     <div class="card {cor_tem_com}">
       <div class="card-lbl">Tempo resp. horário comercial</div>
@@ -646,9 +706,9 @@ td:last-child{{font-size:10px;color:#7a7a7a;white-space:nowrap}}
       <div class="fstep-n">{m['total_leads']}</div>
     </div>
     <div class="fstep">
-      <div class="fstep-lbl">Com diálogo</div>
-      <div class="fbar-bg"><div class="fbar" style="width:{round(m['leads_com_dialogo']/m['total_leads']*100) if m['total_leads'] else 0}%;background:#00A19A">{m['leads_com_dialogo']}</div></div>
-      <div class="fstep-n">{m['leads_com_dialogo']}</div>
+      <div class="fstep-lbl">Entrou no ZapClinic</div>
+      <div class="fbar-bg"><div class="fbar" style="width:{round(m['leads_com_chat']/m['total_leads']*100) if m['total_leads'] else 0}%;background:#00A19A">{m['leads_com_chat']}</div></div>
+      <div class="fstep-n">{m['leads_com_chat']}</div>
     </div>
     <div class="fstep">
       <div class="fstep-lbl">Agendados</div>
@@ -786,7 +846,7 @@ def main():
             print(f"[{slug}] {len(chat_lookup)} entradas no lookup")
             agendados, reagendados = detect_agendados(dialogs, chat_lookup, session, unit["server"])
             print(f"[{slug}] {len(agendados)} agendamentos · {len(reagendados)} reagendamentos")
-            m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"], date_from)
+            m = calcular_metricas(leads, dialogs, agendados, reagendados, unit["meta"], date_from, chat_lookup=chat_lookup)
             unit["metricas"] = m
             units_ok.append(unit)
 
